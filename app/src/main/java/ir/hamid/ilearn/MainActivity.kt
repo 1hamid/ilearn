@@ -54,7 +54,7 @@ private fun LessonsCard(text: String) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .wrapContentSize(),
+            .wrapContentSize()            ,
         shape = RoundedCornerShape(5.dp)
     ) {
         Column {
@@ -63,8 +63,10 @@ private fun LessonsCard(text: String) {
                 contentDescription = "description",
                 modifier = Modifier.size(120.dp)
             )
-            Row(modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(text = text)
             }
         }
