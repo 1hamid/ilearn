@@ -14,9 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -43,12 +43,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun LessonsList() {
 
-    LazyVerticalStaggeredGrid(
+    LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize(),
-        columns = StaggeredGridCells.Adaptive(minSize = 128.dp),
+        columns = GridCells.Adaptive(minSize = 128.dp),
     ) {
-        item( span = StaggeredGridItemSpan.FullLine) {
+        item(span = { GridItemSpan(3) }) {
             Card(  // dashboard for Review words
                 modifier = Modifier
                     .height(150.dp)
