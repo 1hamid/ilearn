@@ -51,9 +51,9 @@ private fun LessonsList() {
         item(span = { GridItemSpan(3) }) {
             Card(  // dashboard for Review words
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(180.dp)
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 24.dp),
                 shape = RoundedCornerShape(5.dp),
                 colors = CardColors(
                     containerColor = colorResource(id = R.color.purple_200),
