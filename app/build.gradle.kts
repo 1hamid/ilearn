@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.builtins.StandardNames.FqNames.target
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("com.diffplug.spotless") version "7.0.0.BETA1"
 }
 
