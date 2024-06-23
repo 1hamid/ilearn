@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,13 +21,19 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 class MainActivity : ComponentActivity() {
@@ -34,18 +41,41 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LessonsList()
+            AppBar()
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppBar() {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "iLearn",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 30.sp
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = colorResource(id = R.color.teal_700))
+            )
+        },
+        content = { innerPadding ->
+            LessonsList(innerPadding)
+        }
+    )
+}
 
 @Composable
-private fun LessonsList() {
+private fun LessonsList(innerPadding: PaddingValues) {
 
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize(),
+        contentPadding = innerPadding,
         columns = GridCells.Adaptive(minSize = 128.dp),
     ) {
         item(span = { GridItemSpan(3) }) {
@@ -53,7 +83,7 @@ private fun LessonsList() {
                 modifier = Modifier
                     .height(180.dp)
                     .fillMaxWidth()
-                    .padding(start = 24.dp, top = 50.dp, end = 24.dp, bottom = 24.dp),
+                    .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp),
                 shape = RoundedCornerShape(5.dp),
                 colors = CardColors(
                     containerColor = colorResource(id = R.color.purple_200),
