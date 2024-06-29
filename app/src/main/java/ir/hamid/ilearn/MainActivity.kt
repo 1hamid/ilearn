@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -27,10 +26,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +82,7 @@ private fun LessonsList(innerPadding: PaddingValues) {
         item(span = { GridItemSpan(3) }) {
             Card(  // dashboard for Review words
                 modifier = Modifier
-                    .height(180.dp)
+                    .height(130.dp)
                     .fillMaxWidth()
                     .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp),
                 shape = RoundedCornerShape(5.dp),
@@ -92,6 +93,27 @@ private fun LessonsList(innerPadding: PaddingValues) {
                     disabledContentColor = Color.DarkGray
                 )
             ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Review",
+                        modifier = Modifier.padding(start = 16.dp),
+                        fontSize = 24.sp,
+                        color = colorResource(R.color.white),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.arrow),
+                        alignment = Alignment.CenterEnd,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 16.dp),
+                        contentDescription = ""
+                    )
+
+                }
 
             }
         }
@@ -113,7 +135,8 @@ private fun LessonsCard(text: String) {
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "description",
-                modifier = Modifier.size(112.dp)
+                modifier = Modifier
+                    .fillMaxSize()
             )
             Row(
                 modifier = Modifier.fillMaxSize(),
