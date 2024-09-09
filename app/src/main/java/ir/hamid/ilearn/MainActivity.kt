@@ -37,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Observer
 import ir.hamid.model.W504DataBase
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel

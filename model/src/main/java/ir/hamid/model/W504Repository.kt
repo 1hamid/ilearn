@@ -1,20 +1,20 @@
 package ir.hamid.model
 
-import kotlinx.coroutines.flow.Flow
-
 class W504Repository(private val wordDao: WordDao) {
 
-    val allWords: Flow<List<QueryResult>> = wordDao.getAll()
+    suspend fun gelAll(): List<QueryResult> {
+        return wordDao.getAll()
+    }
 
-    fun loadByWord(str: String?): Flow<List<QueryResult>> {
+    suspend fun loadByWord(str: String?): List<QueryResult> {
         return wordDao.loadByWord(str)
     }
 
-    fun loadBySample(str: String?): Flow<List<QueryResult2>> {
+    suspend fun loadBySample(str: String?): List<QueryResult2> {
         return wordDao.loadBySample(str)
     }
 
-    fun loadByTranslate(str: String?): Flow<List<QueryResult>> {
+    suspend fun loadByTranslate(str: String?): List<QueryResult> {
         return wordDao.loadByTranslate(str)
     }
 
