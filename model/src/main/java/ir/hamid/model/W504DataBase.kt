@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import java.io.File
 
-@Database(entities = [W504::class], version = 1)
+@Database(entities = [W504::class], version = 2)
 abstract class W504DataBase : RoomDatabase() {
 
     //    abstract fun w504Repository(): W504Repository

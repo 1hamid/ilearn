@@ -12,5 +12,6 @@ data class W504(
     @ColumnInfo(name = "pronunciation") val pronunciation: String?,
     @ColumnInfo(name = "sample") val sample: String?,
     @ColumnInfo(name = "definition") val definition: String?,
-    @ColumnInfo(name = "translate") val translate: String
+    @ColumnInfo(name = "translate") val translate: String,
+    @ColumnInfo(name = "review") val review: Int?
 )
