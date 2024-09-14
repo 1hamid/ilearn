@@ -64,151 +64,151 @@ class MainActivity : ComponentActivity() {
             Log.i("data ", " " + wordViewModel.allWords.value)
         }
     }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AppBar() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "iLearn",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 20.sp
-                    )
-                },
-            )
-        },
-        content = { innerPadding ->
-            AppUI(innerPadding)
-        }
-    )
-}
-
-@Composable
-private fun AppUI(innerPadding: PaddingValues) {
-    Column(
-        modifier = Modifier
-            .padding(innerPadding)
-            .padding(top = 20.dp)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(
-            text = "Let's start",
-            fontSize = 36.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = "Towards success",
-            fontSize = 16.sp
-        )
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.8f)
-                .padding(top = 20.dp)
-                .padding(start = 25.dp, end = 25.dp, top = 25.dp, bottom = 5.dp),
-            shape = RoundedCornerShape(50f),
-            colors = CardColors(
-                containerColor = colorResource(id = R.color.cardColor),
-                contentColor = colorResource(id = R.color.cardColor),
-                disabledContainerColor = Color.Gray,
-                disabledContentColor = Color.DarkGray,
-            )
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Search",
-                    fontSize = 20.sp,
-                    fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                    color = Color.Black
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun AppBar() {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "iLearn",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 20.sp
+                        )
+                    },
                 )
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.7f)
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .padding(start = 25.dp, end = 5.dp, top = 5.dp, bottom = 25.dp),
-                shape = RoundedCornerShape(50f),
-                colors = CardColors(
-                    containerColor = colorResource(id = R.color.cardColor),
-                    contentColor = colorResource(id = R.color.cardColor),
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.DarkGray
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Learning",
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                        color = Color.Black
-                    )
-                }
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
-                    .padding(start = 5.dp, end = 25.dp, top = 5.dp, bottom = 25.dp),
-                shape = RoundedCornerShape(50f),
-                colors = CardColors(
-                    containerColor = colorResource(id = R.color.cardColor),
-                    contentColor = colorResource(id = R.color.cardColor),
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.DarkGray
-                )
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Review",
-                        fontSize = 20.sp,
-                        fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                        color = Color.Black
-                    )
-                }
-            }
-        }
-
-        CircularProgressIndicator(
-            progress = {
-                0.7f
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(3f)
-                .padding(85.dp),
-            color = colorResource(id = R.color.black),
-            strokeWidth = 13.dp,
-            trackColor = colorResource(id = R.color.cardColor),
+            content = { innerPadding ->
+                AppUI(innerPadding)
+            }
         )
+    }
 
+    @Composable
+    private fun AppUI(innerPadding: PaddingValues) {
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(top = 20.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Let's start",
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Towards success",
+                fontSize = 16.sp
+            )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.8f)
+                    .padding(top = 20.dp)
+                    .padding(start = 25.dp, end = 25.dp, top = 25.dp, bottom = 5.dp),
+                shape = RoundedCornerShape(50f),
+                colors = CardColors(
+                    containerColor = colorResource(id = R.color.cardColor),
+                    contentColor = colorResource(id = R.color.cardColor),
+                    disabledContainerColor = Color.Gray,
+                    disabledContentColor = Color.DarkGray,
+                )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Search",
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                        color = Color.Black
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.7f)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(start = 25.dp, end = 5.dp, top = 5.dp, bottom = 25.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Learning",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                        .padding(start = 5.dp, end = 25.dp, top = 5.dp, bottom = 25.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Review",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+
+            CircularProgressIndicator(
+                progress = {
+                    0.7f
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(3f)
+                    .padding(85.dp),
+                color = colorResource(id = R.color.black),
+                strokeWidth = 13.dp,
+                trackColor = colorResource(id = R.color.cardColor),
+            )
+
+        }
     }
 }
