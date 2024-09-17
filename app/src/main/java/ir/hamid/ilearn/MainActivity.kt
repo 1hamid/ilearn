@@ -37,6 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import ir.hamid.model.W504DataBase
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
@@ -80,15 +84,27 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                 )
-            },
-            content = { innerPadding ->
-                AppUI(innerPadding)
             }
-        )
+        ) { innerPadding ->
+            val navController = rememberNavController()
+            NavHost(navController, startDestination = DataSource.IlearnScreens.Home.name) {
+                composable(route = DataSource.IlearnScreens.Home.name) {
+                    AppUI(
+                        innerPadding = innerPadding,
+                        navController
+                    )
+                }
+                composable(route = DataSource.IlearnScreens.Learning.name) {
+                    LearningScreen(
+                        wordViewModel
+                    )
+                }
+            }
+        }
     }
 
     @Composable
-    private fun AppUI(innerPadding: PaddingValues) {
+    private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -146,6 +162,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxHeight()
                         .weight(1f)
                         .padding(start = 25.dp, end = 5.dp, top = 5.dp, bottom = 25.dp),
+                    onClick = { navController.navigate(DataSource.IlearnScreens.Learning.name) },
                     shape = RoundedCornerShape(50f),
                     colors = CardColors(
                         containerColor = colorResource(id = R.color.cardColor),
