@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ir.hamid.model.QueryResult
-import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
 import kotlinx.coroutines.launch
 
@@ -14,16 +13,17 @@ class W504ViewModel(private val repository: W504Repository) : ViewModel() {
 
 
     private var _allWords = MutableLiveData<List<QueryResult>>()
-    private var _words = MutableLiveData<List<QueryResult>>()
-    private var _words2 = MutableLiveData<List<QueryResult2>>()
+    private var _newWords = MutableLiveData<List<QueryResult>>()
+    private var _reviewWords = MutableLiveData<List<QueryResult>>()
+    private var _searchWords = MutableLiveData<List<QueryResult>>()
 
     val allWords: LiveData<List<QueryResult>> get() = _allWords
-    val words: LiveData<List<QueryResult>> get() = _words
-    val words2: LiveData<List<QueryResult2>> get() = _words2
+    val newWords: LiveData<List<QueryResult>> get() = _newWords
+    val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
 
-    init {
-        fetchData()
-    }
+//    init {
+//        fetchData()
+//    }
 
     private fun fetchData() {
         viewModelScope.launch {
@@ -32,10 +32,14 @@ class W504ViewModel(private val repository: W504Repository) : ViewModel() {
         }
     }
 
-    fun fetchDataByDate(date: Int?) {
+    fun fetchDataByDate(date: Long?) {
         viewModelScope.launch {
             val data = repository.loadByReviewDate(date)
-            _words.value = data
+            if (date == null) {
+                _newWords.value = data
+            } else {
+                _reviewWords.value = data
+            }
         }
     }
 
@@ -44,21 +48,21 @@ class W504ViewModel(private val repository: W504Repository) : ViewModel() {
             "word" -> {
                 viewModelScope.launch {
                     val data = repository.loadByWord(str)
-                    _words.value = data
+                    _searchWords.value = data
                 }
             }
 
             "sample" -> {
                 viewModelScope.launch {
                     val data = repository.loadBySample(str)
-                    _words2.value = data
+                    _searchWords.value = data
                 }
             }
 
             "translate" -> {
                 viewModelScope.launch {
                     val data = repository.loadByTranslate(str)
-                    _words.value = data
+                    _searchWords.value = data
                 }
             }
         }

@@ -27,6 +27,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +43,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ir.hamid.model.W504DataBase
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
@@ -63,15 +66,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppBar()
         }
-
-        wordViewModel.allWords.observe(this) {
-            Log.i("data ", " " + wordViewModel.allWords.value)
-        }
+        val timestamp = System.currentTimeMillis()
+        wordViewModel.fetchDataByDate(timestamp)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
+        val reviewWords by wordViewModel.reviewWords.observeAsState()
         Scaffold(
             topBar = {
                 TopAppBar(

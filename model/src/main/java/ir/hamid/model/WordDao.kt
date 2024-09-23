@@ -14,9 +14,12 @@ interface WordDao {
     @Query("SELECT * FROM w504 WHERE translate LIKE '%' || :str || '%'")
     suspend fun loadByTranslate(str: String): List<QueryResult>
 
-    @Query("SELECT word, sample FROM w504 WHERE sample LIKE '%' || :str || '%'")
-    suspend fun loadBySample(str: String): List<QueryResult2>
+    @Query("SELECT * FROM w504 WHERE sample LIKE '%' || :str || '%'")
+    suspend fun loadBySample(str: String): List<QueryResult>
 
     @Query("SELECT * FROM w504 WHERE review <= :date OR review IS null LIMIT 10")
-    suspend fun loadByReviewDate(date: Int?): List<QueryResult>
+    suspend fun loadByReviewDate(date: Long?): List<QueryResult>
+
+    @Query("UPDATE w504 SET review = :date WHERE id == :id")
+    suspend fun updateReviewDate(date: Long, id: Int)
 }

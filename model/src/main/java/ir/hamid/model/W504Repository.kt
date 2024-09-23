@@ -10,7 +10,7 @@ class W504Repository(private val wordDao: WordDao) {
         return wordDao.loadByWord(str)
     }
 
-    suspend fun loadBySample(str: String): List<QueryResult2> {
+    suspend fun loadBySample(str: String): List<QueryResult> {
         return wordDao.loadBySample(str)
     }
 
@@ -18,7 +18,7 @@ class W504Repository(private val wordDao: WordDao) {
         return wordDao.loadByTranslate(str)
     }
 
-    suspend fun loadByReviewDate(date: Int?): List<QueryResult> {
+    suspend fun loadByReviewDate(date: Long?): List<QueryResult> {
         return wordDao.loadByReviewDate(date)
     }
 

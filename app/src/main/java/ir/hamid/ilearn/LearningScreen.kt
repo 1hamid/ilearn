@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -23,8 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ir.hamid.model.QueryResult
@@ -49,11 +53,23 @@ fun LearningScreen(wordViewModel: W504ViewModel) {
 }
 
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun PreviewLayout() {
-//    Layout(innerPadding = PaddingValues(5.dp))
-//}
+@Preview(showBackground = true)
+@Composable
+private fun PreviewLayout() {
+    val sampleWords: List<QueryResult> = listOf(
+        QueryResult(
+            id = 0,
+            word = "word",
+            code = "code",
+            pronunciation = "prounuciation",
+            sample = "sample",
+            definition = "definition",
+            translate = "translate",
+            review = 0
+        )
+    )
+    Layout(innerPadding = PaddingValues(5.dp), sampleWords)
+}
 
 @Composable
 private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
@@ -70,16 +86,31 @@ private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
             modifier = Modifier.padding(bottom = 10.dp),
             fontSize = 30.sp
         )
-        Text(text = words[index].pronunciation, modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp))
-        Text(text = words[index].definition, modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp), fontSize = 20.sp)
         Text(
-            text = words[index].translate,
+            text = words[index].pronunciation,
+            modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)
+        )
+        Text(
+            text = words[index].definition,
             modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
             fontSize = 20.sp
         )
-        Text(text = words[index].sample, modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp), fontSize = 20.sp)
-        Text(text = words[index].code, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
-        Row(modifier = Modifier.padding(50.dp)) {
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Text(
+                text = words[index].translate,
+                modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
+                fontSize = 20.sp
+            )
+        }
+        Text(
+            text = words[index].sample,
+            modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
+            fontSize = 20.sp
+        )
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Text(text = words[index].code, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
+        }
+        Row(modifier = Modifier.padding(start = 50.dp, top = 50.dp, end = 50.dp)) {
             Button(
                 modifier = Modifier
                     .padding(15.dp)
@@ -110,6 +141,17 @@ private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
                 Text(text = "Next", color = Color.Black)
             }
         }
+        Column {
+            Button(
+                modifier = Modifier
+                    .padding(start = 65.dp, end = 65.dp, bottom = 50.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.submit)),
+                onClick = { updateReviewDate(words[index].id) }) {
+                Text(text = "OK", color = Color.Black)
+            }
+        }
     }
 }
 
@@ -119,11 +161,11 @@ private fun GetData(
     innerPadding: PaddingValues
 ) {
     wordViewModel.fetchDataByDate(null)
-    val words by wordViewModel.words.observeAsState()
-    if (words.isNullOrEmpty()) {
+    val newWords by wordViewModel.newWords.observeAsState()
+    if (newWords.isNullOrEmpty()) {
         Loading()
     } else {
-        Layout(innerPadding, words!!)
+        Layout(innerPadding, newWords!!)
     }
 }
 
@@ -142,4 +184,8 @@ fun Loading() {
 
         )
     }
+}
+
+fun updateReviewDate(id: Int) {
+
 }

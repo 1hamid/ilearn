@@ -1,6 +1,7 @@
 package ir.hamid.model
 
 data class QueryResult(
+    val id: Int,
     val word: String,
     val code: String,
     val pronunciation: String,

@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.hiltAndroid)
     id("com.diffplug.spotless") version "7.0.0.BETA1"
 }
 
@@ -67,6 +69,8 @@ dependencies {
     implementation(project(":viewModel"))
     implementation(project(":model"))
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
