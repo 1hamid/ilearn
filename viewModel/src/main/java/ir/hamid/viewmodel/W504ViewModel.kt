@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hamid.model.QueryResult
 import ir.hamid.model.W504Repository
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class W504ViewModel(private val repository: W504Repository) : ViewModel() {
+@HiltViewModel
+class W504ViewModel @Inject constructor(private val repository: W504Repository) : ViewModel() {
 
 
     private var _allWords = MutableLiveData<List<QueryResult>>()
@@ -70,7 +73,7 @@ class W504ViewModel(private val repository: W504Repository) : ViewModel() {
 
 }
 
-class WordViewModelFactory(private val repository: W504Repository) : ViewModelProvider.Factory {
+class WordViewModelFactory @Inject constructor(private val repository: W504Repository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(W504ViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

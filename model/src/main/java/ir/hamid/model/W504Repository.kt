@@ -1,6 +1,8 @@
 package ir.hamid.model
 
-class W504Repository(private val wordDao: WordDao) {
+import javax.inject.Inject
+
+class W504Repository @Inject constructor(private val wordDao: WordDao) {
 
     suspend fun gelAll(): List<QueryResult> {
         return wordDao.getAll()

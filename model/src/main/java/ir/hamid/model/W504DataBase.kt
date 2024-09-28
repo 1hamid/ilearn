@@ -8,8 +8,6 @@ import java.io.File
 
 @Database(entities = [W504::class], version = 2)
 abstract class W504DataBase : RoomDatabase() {
-
-    //    abstract fun w504Repository(): W504Repository
     abstract fun wordDao(): WordDao
 
     companion object {

@@ -46,14 +46,16 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ir.hamid.model.W504DataBase
 import ir.hamid.model.W504Repository
+import ir.hamid.model.WordDao
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val database by lazy { W504DataBase.getDatabase(this) }
-    private val repository by lazy { W504Repository(database.wordDao()) }
-
+    @Inject
+    lateinit var repository: W504Repository
     private val wordViewModel: W504ViewModel by viewModels {
         WordViewModelFactory(repository)
     }
@@ -66,14 +68,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppBar()
         }
-        val timestamp = System.currentTimeMillis()
-        wordViewModel.fetchDataByDate(timestamp)
+//        val timestamp = System.currentTimeMillis()
+//        wordViewModel.fetchDataByDate(timestamp)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
-        val reviewWords by wordViewModel.reviewWords.observeAsState()
+//        val reviewWords by wordViewModel.reviewWords.observeAsState()
         Scaffold(
             topBar = {
                 TopAppBar(
