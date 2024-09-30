@@ -24,4 +24,11 @@ class W504Repository @Inject constructor(private val wordDao: WordDao) {
         return wordDao.loadByReviewDate(date)
     }
 
+    suspend fun loadNewWords(): List<QueryResult> {
+        return wordDao.loadNewWords()
+    }
+
+    suspend fun updateReviewDate(date: Long, id: Int) {
+        return wordDao.updateReviewDate(date, id)
+    }
 }

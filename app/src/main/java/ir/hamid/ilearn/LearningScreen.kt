@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ir.hamid.ilearn.IlearnApplication.Companion.getStartOfDayTimestamp
 import ir.hamid.model.QueryResult
 import ir.hamid.viewmodel.W504ViewModel
 
@@ -68,11 +69,15 @@ private fun PreviewLayout() {
             review = 0
         )
     )
-    Layout(innerPadding = PaddingValues(5.dp), sampleWords)
+    Layout(innerPadding = PaddingValues(5.dp), sampleWords, null)
 }
 
 @Composable
-private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
+private fun Layout(
+    innerPadding: PaddingValues,
+    words: List<QueryResult>,
+    wordViewModel: W504ViewModel?
+) {
     var index by remember { mutableIntStateOf(0) }
     Column(
         modifier = Modifier
@@ -84,7 +89,7 @@ private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
         Text(
             text = words[index].word,
             modifier = Modifier.padding(bottom = 10.dp),
-            fontSize = 30.sp
+            fontSize = 40.sp
         )
         Text(
             text = words[index].pronunciation,
@@ -148,7 +153,12 @@ private fun Layout(innerPadding: PaddingValues, words: List<QueryResult>) {
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.submit)),
-                onClick = { updateReviewDate(words[index].id) }) {
+                onClick = {
+                    insertReviewDate(words[index].id, wordViewModel)
+                    if (index < words.size - 1) {
+                        index++
+                    }
+                }) {
                 Text(text = "OK", color = Color.Black)
             }
         }
@@ -160,12 +170,12 @@ private fun GetData(
     wordViewModel: W504ViewModel,
     innerPadding: PaddingValues
 ) {
-    wordViewModel.fetchDataByDate(null)
+    wordViewModel.fetchNewWords()
     val newWords by wordViewModel.newWords.observeAsState()
     if (newWords.isNullOrEmpty()) {
         Loading()
     } else {
-        Layout(innerPadding, newWords!!)
+        Layout(innerPadding, newWords!!, wordViewModel)
     }
 }
 
@@ -186,6 +196,7 @@ fun Loading() {
     }
 }
 
-fun updateReviewDate(id: Int) {
-
+fun insertReviewDate(id: Int, wordViewModel: W504ViewModel?) {
+    val date = getStartOfDayTimestamp()
+    wordViewModel!!.updateReviewDate(date, id)
 }

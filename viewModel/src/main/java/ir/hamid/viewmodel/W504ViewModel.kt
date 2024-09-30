@@ -28,26 +28,29 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
 //        fetchData()
 //    }
 
-    private fun fetchData() {
+    private fun fetchAllWords() {
         viewModelScope.launch {
             val data = repository.gelAll()
             _allWords.value = data
         }
     }
 
-    fun fetchDataByDate(date: Long?) {
+    fun fetchWordsByDate(date: Long?) {
         viewModelScope.launch {
             val data = repository.loadByReviewDate(date)
-            if (date == null) {
-                _newWords.value = data
-            } else {
-                _reviewWords.value = data
-            }
+            _reviewWords.value = data
         }
     }
 
-    fun fetchData(event: String, str: String) {
-        when (event) {
+    fun fetchNewWords() {
+        viewModelScope.launch {
+            val data = repository.loadNewWords()
+            _newWords.value = data
+        }
+    }
+
+    fun fetchWordsBySearch(searchType: String, str: String) {
+        when (searchType) {
             "word" -> {
                 viewModelScope.launch {
                     val data = repository.loadByWord(str)
@@ -71,9 +74,16 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         }
     }
 
+    fun updateReviewDate(date: Long, id: Int) {
+        viewModelScope.launch {
+            repository.updateReviewDate(date, id)
+        }
+    }
+
 }
 
-class WordViewModelFactory @Inject constructor(private val repository: W504Repository) : ViewModelProvider.Factory {
+class WordViewModelFactory @Inject constructor(private val repository: W504Repository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(W504ViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

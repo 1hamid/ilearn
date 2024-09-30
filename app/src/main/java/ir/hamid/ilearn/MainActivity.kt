@@ -3,7 +3,6 @@ package ir.hamid.ilearn
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,8 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,9 +41,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ir.hamid.model.W504DataBase
 import ir.hamid.model.W504Repository
-import ir.hamid.model.WordDao
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
 import javax.inject.Inject
@@ -102,6 +97,9 @@ class MainActivity : ComponentActivity() {
                     LearningScreen(
                         wordViewModel
                     )
+                }
+                composable(route = DataSource.IlearnScreens.Review.name) {
+                    ReviewScreen(wordViewModel)
                 }
             }
         }
@@ -194,6 +192,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxHeight()
                         .weight(1f)
                         .padding(start = 5.dp, end = 25.dp, top = 5.dp, bottom = 25.dp),
+                    onClick = { navController.navigate(DataSource.IlearnScreens.Review.name) },
                     shape = RoundedCornerShape(50f),
                     colors = CardColors(
                         containerColor = colorResource(id = R.color.cardColor),
