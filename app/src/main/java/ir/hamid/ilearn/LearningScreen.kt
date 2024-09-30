@@ -19,10 +19,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
@@ -79,6 +81,8 @@ private fun Layout(
     wordViewModel: W504ViewModel?
 ) {
     var index by remember { mutableIntStateOf(0) }
+    var nextButtonState by remember { mutableStateOf(true) }
+    var previousButtonState by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,29 +124,41 @@ private fun Layout(
                 modifier = Modifier
                     .padding(15.dp)
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .alpha(if (previousButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
 
                 onClick = {
                     if (index > 0) {
+                        nextButtonState = true
                         index--
+                        if (index == 0)
+                            previousButtonState = false
                     }
-                }) {
+                },
+                enabled = previousButtonState
+                ) {
                 Text(text = "Previous", color = Color.Black)
             }
             Button(
                 modifier = Modifier
                     .padding(15.dp)
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .alpha(if (nextButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
                 onClick = {
                     if (index < words.size - 1) {
+                        previousButtonState = true
                         index++
+                        if (index == words.size - 1)
+                            nextButtonState = false
                     }
-                }) {
+                },
+                enabled = nextButtonState
+            ) {
                 Text(text = "Next", color = Color.Black)
             }
         }
