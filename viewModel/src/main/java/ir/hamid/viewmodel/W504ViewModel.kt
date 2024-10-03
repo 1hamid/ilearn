@@ -80,6 +80,12 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         }
     }
 
+    fun reset() {
+        viewModelScope.launch {
+            repository.reset()
+        }
+    }
+
 }
 
 class WordViewModelFactory @Inject constructor(private val repository: W504Repository) :

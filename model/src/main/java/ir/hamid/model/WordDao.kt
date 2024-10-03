@@ -25,4 +25,7 @@ interface WordDao {
 
     @Query("UPDATE w504 SET review = :date WHERE id == :id")
     suspend fun updateReviewDate(date: Long, id: Int)
+
+    @Query("UPDATE w504 SET review = null")
+    suspend fun reset()
 }

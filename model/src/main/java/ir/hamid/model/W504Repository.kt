@@ -31,4 +31,8 @@ class W504Repository @Inject constructor(private val wordDao: WordDao) {
     suspend fun updateReviewDate(date: Long, id: Int) {
         return wordDao.updateReviewDate(date, id)
     }
+
+    suspend fun reset() {
+        return wordDao.reset()
+    }
 }

@@ -3,11 +3,14 @@ package ir.hamid.ilearn
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.gestures.detectTapGestures
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,17 +21,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -107,6 +120,11 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
+        val context = LocalContext.current
+        var tapCount by remember { mutableIntStateOf(0) }
+        var lastTapTime by remember { mutableLongStateOf(0L) }
+        var showDialog by remember { mutableStateOf(false) }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -216,19 +234,83 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            CircularProgressIndicator(
-                progress = {
-                    0.7f
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(3f)
-                    .padding(85.dp),
-                color = colorResource(id = R.color.black),
-                strokeWidth = 13.dp,
-                trackColor = colorResource(id = R.color.cardColor),
-            )
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .weight(3f)
+                .padding(85.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        val currentTime = System.currentTimeMillis()
+                        if (currentTime - lastTapTime < 1000) {
+                            tapCount++
+                            Log.i("tap", "tapCount = $tapCount")
 
+                        } else {
+                            tapCount = 1
+                            Log.i("tap", "tapCount = $tapCount")
+                        }
+                        lastTapTime = currentTime
+                        if (tapCount == 4) {
+                            tapCount = 0
+                            showDialog = true
+                        }
+                    })
+                }) {
+                CircularProgressIndicator(
+                    modifier = Modifier.fillMaxSize(),
+                    progress = {
+                        0.7f
+                    },
+                    color = colorResource(id = R.color.black),
+                    strokeWidth = 13.dp,
+                    trackColor = colorResource(id = R.color.cardColor),
+                )
+            }
         }
+        if (showDialog) {
+            ResetAlertDialog(
+                onConfirm = {
+                    Toast.makeText(context, "Reset", Toast.LENGTH_LONG).show()
+                    showDialog = false
+                },
+                onDismiss = {
+                    showDialog = false
+                }
+            )
+        }
+    }
+
+    @Composable
+    private fun ResetAlertDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+        AlertDialog(
+            onDismissRequest = {
+                onDismiss()
+            },
+            title = {
+                Text(text = "warning")
+            },
+            text = {
+                Text("Are you sure to reset database ?")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        wordViewModel.reset()
+                        onConfirm()
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        onDismiss()
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
