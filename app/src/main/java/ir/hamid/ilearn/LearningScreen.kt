@@ -199,23 +199,6 @@ private fun GetData(
     }
 }
 
-//@Preview
-@Composable
-fun Loading() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Loading . . .",
-            fontSize = 25.sp,
-            modifier = Modifier.padding(100.dp)
-
-        )
-    }
-}
-
 fun insertReviewDate(id: Int, wordViewModel: W504ViewModel?) {
     val date = getStartOfDayTimestamp()
     wordViewModel!!.updateReviewDate(date, id)
