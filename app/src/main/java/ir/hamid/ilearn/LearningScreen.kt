@@ -172,7 +172,11 @@ private fun Layout(
                 onClick = {
                     insertReviewDate(words[index].id, wordViewModel)
                     if (index < words.size - 1) {
+                        previousButtonState = true
                         index++
+                        if (index == words.size - 1) {
+                            nextButtonState = false
+                        }
                     }
                 }) {
                 Text(text = "OK", color = Color.Black)
