@@ -164,11 +164,11 @@ fun ReviewLayout(
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
 
                 onClick = {
+                    showAnswer = false
+                    updateReviewDate(words[index].id, 1.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
                     }
-                    showAnswer = false
-                    updateReviewDate(words[index].id, 1.0, wordViewModel)
                 }) {
                 Text(text = "1", color = Color.Black)
             }
@@ -180,11 +180,11 @@ fun ReviewLayout(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
                 onClick = {
+                    showAnswer = false
+                    updateReviewDate(words[index].id, 2.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
                     }
-                    showAnswer = false
-                    updateReviewDate(words[index].id, 2.0, wordViewModel)
                 }) {
                 Text(text = "2", color = Color.Black)
             }
@@ -196,11 +196,11 @@ fun ReviewLayout(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
                 onClick = {
+                    showAnswer = false
+                    updateReviewDate(words[index].id, 3.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
                     }
-                    showAnswer = false
-                    updateReviewDate(words[index].id, 3.0, wordViewModel)
                 }) {
                 Text(text = "3", color = Color.Black)
             }
@@ -212,11 +212,11 @@ fun ReviewLayout(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
                 onClick = {
+                    showAnswer = false
+                    updateReviewDate(words[index].id, 4.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
                     }
-                    showAnswer = false
-                    updateReviewDate(words[index].id, 4.0, wordViewModel)
                 }) {
                 Text(text = "4", color = Color.Black)
             }
@@ -228,11 +228,11 @@ fun ReviewLayout(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
                 onClick = {
+                    updateReviewDate(words[index].id, 5.0, wordViewModel)
+                    showAnswer = false
                     if (index < words.size - 1) {
                         index++
                     }
-                    showAnswer = false
-                    updateReviewDate(words[index].id, 5.0, wordViewModel)
                 }) {
                 Text(text = "5", color = Color.Black)
             }
