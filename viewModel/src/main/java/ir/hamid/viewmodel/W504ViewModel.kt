@@ -17,12 +17,14 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
 
     private var _allWords = MutableLiveData<List<QueryResult>>()
     private var _newWords = MutableLiveData<List<QueryResult>>()
+    private var _learnedWords = MutableLiveData<List<QueryResult>>()
     private var _reviewWords = MutableLiveData<List<QueryResult>>()
     private var _searchWords = MutableLiveData<List<QueryResult>>()
 
     val allWords: LiveData<List<QueryResult>> get() = _allWords
     val newWords: LiveData<List<QueryResult>> get() = _newWords
     val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
+    val learnedWords: LiveData<List<QueryResult>> get() = _learnedWords
 
 //    init {
 //        fetchData()
@@ -46,6 +48,13 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         viewModelScope.launch {
             val data = repository.loadNewWords()
             _newWords.value = data
+        }
+    }
+
+    fun fetchLearnedWords() {
+        viewModelScope.launch {
+            val data = repository.loadAllLearnedWords()
+            _learnedWords.value = data
         }
     }
 

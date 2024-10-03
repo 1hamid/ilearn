@@ -114,6 +114,12 @@ class MainActivity : ComponentActivity() {
                 composable(route = DataSource.IlearnScreens.Review.name) {
                     ReviewScreen(wordViewModel)
                 }
+                composable(route = DataSource.IlearnScreens.Analysis.name) {
+                    LearnedWordsScreen(wordViewModel)
+                }
+                composable(route = DataSource.IlearnScreens.Search.name) {
+                    // Todo SearchScreen
+                }
             }
         }
     }
@@ -121,8 +127,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
         val context = LocalContext.current
-        var tapCount by remember { mutableIntStateOf(0) }
-        var lastTapTime by remember { mutableLongStateOf(0L) }
+        var showLearnedWords by remember { mutableStateOf(false) }
         var showDialog by remember { mutableStateOf(false) }
 
         Column(
@@ -239,22 +244,13 @@ class MainActivity : ComponentActivity() {
                 .weight(3f)
                 .padding(85.dp)
                 .pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        val currentTime = System.currentTimeMillis()
-                        if (currentTime - lastTapTime < 1000) {
-                            tapCount++
-                            Log.i("tap", "tapCount = $tapCount")
-
-                        } else {
-                            tapCount = 1
-                            Log.i("tap", "tapCount = $tapCount")
-                        }
-                        lastTapTime = currentTime
-                        if (tapCount == 4) {
-                            tapCount = 0
+                    detectTapGestures(
+                        onLongPress = {
                             showDialog = true
-                        }
-                    })
+                        },
+                        onPress = {
+                            showLearnedWords = true
+                        })
                 }) {
                 CircularProgressIndicator(
                     modifier = Modifier.fillMaxSize(),
@@ -277,6 +273,8 @@ class MainActivity : ComponentActivity() {
                     showDialog = false
                 }
             )
+        } else if (showLearnedWords) {
+            LearnedWordsScreen(wordViewModel)
         }
     }
 

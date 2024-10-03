@@ -20,6 +20,9 @@ interface WordDao {
     @Query("SELECT * FROM w504 WHERE review <= :date")
     suspend fun loadByReviewDate(date: Long?): List<QueryResult>
 
+    @Query("SELECT * FROM w504 WHERE review IS NOT null")
+    suspend fun loadAllLearnedWords(): List<QueryResult>
+
     @Query("SELECT * FROM W504 WHERE review IS null LIMIT 10")
     suspend fun loadNewWords(): List<QueryResult>
 
