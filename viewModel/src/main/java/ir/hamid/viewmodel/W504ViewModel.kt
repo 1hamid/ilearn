@@ -37,7 +37,7 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         }
     }
 
-    fun fetchWordsByDate(date: Long?) {
+    fun fetchWordsByDate(date: Int?) {
         viewModelScope.launch {
             val data = repository.loadByReviewDate(date)
             _reviewWords.value = data
@@ -83,7 +83,7 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         }
     }
 
-    fun updateReviewDate(date: Long, id: Int) {
+    fun updateReviewDate(date: Int, id: Int) {
         viewModelScope.launch {
             repository.updateReviewDate(date, id)
         }

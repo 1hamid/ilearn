@@ -8,7 +8,7 @@ import java.util.Calendar
 class IlearnApplication : Application() {
 
     companion object {
-        fun getStartOfDayTimestamp(): Long {
+        fun getStartOfDayTimestamp(): Int {
             val calendar = Calendar.getInstance()
 
             calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -16,7 +16,7 @@ class IlearnApplication : Application() {
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
 
-            return calendar.timeInMillis
+            return (calendar.timeInMillis / 1000).toInt()
         }
     }
 }

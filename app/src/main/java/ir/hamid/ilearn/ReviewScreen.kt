@@ -1,5 +1,6 @@
 package ir.hamid.ilearn
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,8 +59,8 @@ fun ReviewScreen(wordViewModel: W504ViewModel) {
 
 @Composable
 fun GetDataForReview(wordViewModel: W504ViewModel, innerPadding: PaddingValues) {
-    val date = System.currentTimeMillis()
-    wordViewModel.fetchWordsByDate(date)
+    val date = System.currentTimeMillis() / 1000
+    wordViewModel.fetchWordsByDate(date.toInt())
 
     val reviewWords by wordViewModel.reviewWords.observeAsState()
     if (reviewWords.isNullOrEmpty()) {
@@ -259,7 +260,8 @@ fun ReviewLayout(
 }
 
 fun updateReviewDate(id: Int, level: Double, wordViewModel: W504ViewModel?) {
-    val date = getStartOfDayTimestamp() + ((level.pow(2)) * 24 * 60 * 60 * 1000L)
-    wordViewModel!!.updateReviewDate(date.toLong(), id)
+    val date = getStartOfDayTimestamp() + ((level.pow(2)) * 24 * 60 * 60)
+    Log.i("reset", "reset update learning  - id = $id  date= $date")
+    wordViewModel!!.updateReviewDate(date.toInt(), id)
 }
 

@@ -18,7 +18,7 @@ interface WordDao {
     suspend fun loadBySample(str: String): List<QueryResult>
 
     @Query("SELECT * FROM w504 WHERE review <= :date")
-    suspend fun loadByReviewDate(date: Long?): List<QueryResult>
+    suspend fun loadByReviewDate(date: Int?): List<QueryResult>
 
     @Query("SELECT * FROM w504 WHERE review IS NOT null")
     suspend fun loadAllLearnedWords(): List<QueryResult>
@@ -27,7 +27,7 @@ interface WordDao {
     suspend fun loadNewWords(): List<QueryResult>
 
     @Query("UPDATE w504 SET review = :date WHERE id == :id")
-    suspend fun updateReviewDate(date: Long, id: Int)
+    suspend fun updateReviewDate(date: Int, id: Int)
 
     @Query("UPDATE w504 SET review = null")
     suspend fun reset()
