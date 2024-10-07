@@ -293,6 +293,7 @@ class MainActivity : ComponentActivity() {
             confirmButton = {
                 TextButton(
                     onClick = {
+                        Log.i("reset", "reset")
                         wordViewModel.reset()
                         onConfirm()
                     }
