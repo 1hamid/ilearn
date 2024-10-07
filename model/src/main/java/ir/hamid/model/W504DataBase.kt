@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import java.io.File
 
-@Database(entities = [W504::class], version = 2)
+@Database(entities = [W504::class], version = 1)
 abstract class W504DataBase : RoomDatabase() {
     abstract fun wordDao(): WordDao
 
@@ -21,25 +21,26 @@ abstract class W504DataBase : RoomDatabase() {
                     return tempInstance
                 }
 
-                // Copy the prepopulated database
                 val dbName = "W504.db"
                 val dbPath = "database/$dbName"
                 val dbFile = File(context.getDatabasePath(dbName).path)
-                context.assets.open(dbPath).use { inputStream ->
-                    dbFile.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
 
-                    val instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        W504DataBase::class.java,
-                        dbName
-                    )
-                        .createFromAsset(dbPath) // Path where the db is copied
-                        .build()
-                    INSTANCE = instance
-                    instance
+                if (!dbFile.exists()) {
+                    context.assets.open(dbPath).use { inputStream ->
+                        dbFile.outputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
                 }
+
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    W504DataBase::class.java,
+                    dbName
+                ).build()
+
+                INSTANCE = instance
+                instance
             }
         }
     }
