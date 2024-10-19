@@ -69,7 +69,6 @@ private fun PreviewLayout() {
             sample = "sample",
             definition = "definition",
             translate = "translate",
-            review = 0
         )
     )
     Layout(innerPadding = PaddingValues(5.dp), sampleWords, null)
@@ -204,4 +203,7 @@ fun insertReviewDate(id: Int, wordViewModel: W504ViewModel?) {
     val date = getStartOfDayTimestamp()
     Log.i("reset", "reset update learning - id = $id  date= $date")
     wordViewModel!!.updateReviewDate(date, id)
+
+    val c = wordViewModel.counterData.value
+    wordViewModel.saveCounter(c!! + 1)
 }

@@ -1,24 +1,32 @@
 package ir.hamid.ilearn
 
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ir.hamid.model.QueryResult
 import ir.hamid.viewmodel.W504ViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,37 +42,158 @@ fun LearnedWordsScreen(wordViewModel: W504ViewModel) {
             )
         })
     },
-        content = { innerPadding -> GetLearnedWords(wordViewModel, innerPadding) })
+        content = { innerPadding -> WordsBoxView(innerPadding) })
 }
 
 @Composable
-fun GetLearnedWords(wordViewModel: W504ViewModel, innerPadding: PaddingValues) {
-    wordViewModel.fetchLearnedWords()
-    val words by wordViewModel.learnedWords.observeAsState()
-
-    if (words.isNullOrEmpty()) {
-        Loading()
-    } else {
-        WordsList(words!!, innerPadding)
-    }
-}
-
-
-@Composable
-fun WordsList(words: List<QueryResult>, innerPadding: PaddingValues) {
-    LazyRow(
+fun WordsBoxView(innerPadding: PaddingValues) {
+    Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 20.dp)
-            .padding(innerPadding)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        items(words) { item ->
-            Text(
-                text = item.word,
-                fontSize = 15.sp,
-                modifier = Modifier.padding(start = 20.dp, top = 5.dp),
-                fontWeight = FontWeight.Bold
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(1f / 2f)
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 20.dp, end = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "1",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "2",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 20.dp, end = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "3",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "4",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(start = 20.dp, end = 20.dp),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(10.dp),
+                    shape = RoundedCornerShape(50f),
+                    colors = CardColors(
+                        containerColor = colorResource(id = R.color.cardColor),
+                        contentColor = colorResource(id = R.color.cardColor),
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.DarkGray
+                    )
+                ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "5",
+                            fontSize = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.kanitmedium)),
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
         }
     }
 }

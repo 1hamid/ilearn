@@ -8,5 +8,4 @@ data class QueryResult(
     val sample: String,
     val definition: String,
     val translate: String,
-    val review: Int
 )

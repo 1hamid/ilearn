@@ -70,6 +70,7 @@ dependencies {
     implementation(project(":model"))
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.hilt.android)
+    implementation(libs.datastore)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

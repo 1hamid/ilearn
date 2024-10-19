@@ -4,15 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.hamid.model.DataStoreRepository
 import ir.hamid.model.QueryResult
 import ir.hamid.model.W504Repository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class W504ViewModel @Inject constructor(private val repository: W504Repository) : ViewModel() {
+class W504ViewModel @Inject constructor(
+    private val w504repository: W504Repository,
+    private val dataStoreRepository: DataStoreRepository
+) : ViewModel() {
 
 
     private var _allWords = MutableLiveData<List<QueryResult>>()
@@ -26,34 +31,38 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
     val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
     val learnedWords: LiveData<List<QueryResult>> get() = _learnedWords
 
-//    init {
-//        fetchData()
-//    }
+    val counterData: LiveData<Int?> = dataStoreRepository.counter.asLiveData()
+
+    fun saveCounter(value: Int) {
+        viewModelScope.launch {
+            dataStoreRepository.saveCounter(value)
+        }
+    }
 
     private fun fetchAllWords() {
         viewModelScope.launch {
-            val data = repository.gelAll()
+            val data = w504repository.gelAll()
             _allWords.value = data
         }
     }
 
     fun fetchWordsByDate(date: Int?) {
         viewModelScope.launch {
-            val data = repository.loadByReviewDate(date)
+            val data = w504repository.loadByReviewDate(date)
             _reviewWords.value = data
         }
     }
 
     fun fetchNewWords() {
         viewModelScope.launch {
-            val data = repository.loadNewWords()
+            val data = w504repository.loadNewWords()
             _newWords.value = data
         }
     }
 
     fun fetchLearnedWords() {
         viewModelScope.launch {
-            val data = repository.loadAllLearnedWords()
+            val data = w504repository.loadAllLearnedWords()
             _learnedWords.value = data
         }
     }
@@ -62,21 +71,21 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
         when (searchType) {
             "word" -> {
                 viewModelScope.launch {
-                    val data = repository.loadByWord(str)
+                    val data = w504repository.loadByWord(str)
                     _searchWords.value = data
                 }
             }
 
             "sample" -> {
                 viewModelScope.launch {
-                    val data = repository.loadBySample(str)
+                    val data = w504repository.loadBySample(str)
                     _searchWords.value = data
                 }
             }
 
             "translate" -> {
                 viewModelScope.launch {
-                    val data = repository.loadByTranslate(str)
+                    val data = w504repository.loadByTranslate(str)
                     _searchWords.value = data
                 }
             }
@@ -85,24 +94,25 @@ class W504ViewModel @Inject constructor(private val repository: W504Repository) 
 
     fun updateReviewDate(date: Int, id: Int) {
         viewModelScope.launch {
-            repository.updateReviewDate(date, id)
+            w504repository.updateReviewDate(date, id)
         }
     }
 
     fun reset() {
         viewModelScope.launch {
-            repository.reset()
+            w504repository.reset()
+            saveCounter(0)
         }
     }
 
 }
 
-class WordViewModelFactory @Inject constructor(private val repository: W504Repository) :
+class WordViewModelFactory @Inject constructor(private val w504repository: W504Repository, private val dataStoreRepository: DataStoreRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(W504ViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return W504ViewModel(repository) as T
+            return W504ViewModel(w504repository, dataStoreRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

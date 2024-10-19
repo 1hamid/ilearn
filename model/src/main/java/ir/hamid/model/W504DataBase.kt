@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import java.io.File
 
-@Database(entities = [W504::class], version = 1)
+@Database(entities = [W504::class, State::class], version = 1)
 abstract class W504DataBase : RoomDatabase() {
     abstract fun wordDao(): WordDao
 

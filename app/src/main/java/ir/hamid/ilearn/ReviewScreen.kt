@@ -82,8 +82,7 @@ private fun PreviewReviewLayout() {
             pronunciation = "prounuciation",
             sample = "sample",
             definition = "definition",
-            translate = "translate",
-            review = 0
+            translate = "translate"
         )
     )
     ReviewLayout(innerPadding = PaddingValues(5.dp), sampleWords, null)

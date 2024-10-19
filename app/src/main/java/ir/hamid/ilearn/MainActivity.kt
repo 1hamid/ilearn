@@ -10,8 +10,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.gestures.detectTapGestures
-
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,17 +34,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +55,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import ir.hamid.model.DataStoreRepository
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
@@ -64,8 +66,11 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var repository: W504Repository
+
+    @Inject
+    lateinit var dataStoreRepository: DataStoreRepository
     private val wordViewModel: W504ViewModel by viewModels {
-        WordViewModelFactory(repository)
+        WordViewModelFactory(repository, dataStoreRepository)
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -127,8 +132,14 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
         val context = LocalContext.current
-        var showLearnedWords by remember { mutableStateOf(false) }
         var showDialog by remember { mutableStateOf(false) }
+
+        var progress by remember { mutableFloatStateOf(0f) }
+        wordViewModel.counterData.observe(this) { counter ->
+            if (counter != null) {
+                progress = ((100f * counter.toFloat()) / 540f) / 100f
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -239,29 +250,50 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .weight(3f)
-                .padding(85.dp)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onLongPress = {
-                            showDialog = true
-                        },
-                        onPress = {
-                            showLearnedWords = true
-                        })
-                }) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2.5f)
+                    .padding(85.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() })
+                    {
+                        navController.navigate(DataSource.IlearnScreens.Analysis.name)
+                    }
+            ) {
                 CircularProgressIndicator(
                     modifier = Modifier.fillMaxSize(),
                     progress = {
-                        0.7f
+                        progress
                     },
                     color = colorResource(id = R.color.black),
                     strokeWidth = 13.dp,
                     trackColor = colorResource(id = R.color.cardColor),
                 )
             }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.3f)
+                    .padding(bottom = 20.dp, end = 25.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box(modifier = Modifier
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() })
+                    {
+                        showDialog = true
+                    }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.reset),
+                        contentDescription = "reset"
+                    )
+                }
+            }
+
         }
         if (showDialog) {
             ResetAlertDialog(
@@ -273,9 +305,8 @@ class MainActivity : ComponentActivity() {
                     showDialog = false
                 }
             )
-        } else if (showLearnedWords) {
-            LearnedWordsScreen(wordViewModel)
         }
+
     }
 
     @Composable

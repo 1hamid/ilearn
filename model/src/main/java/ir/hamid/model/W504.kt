@@ -13,5 +13,11 @@ data class W504(
     @ColumnInfo(name = "sample") val sample: String?,
     @ColumnInfo(name = "definition") val definition: String?,
     @ColumnInfo(name = "translate") val translate: String,
-    @ColumnInfo(name = "review") val review: Int?
+)
+
+@Entity(tableName = "state")
+data class State(
+    @PrimaryKey @ColumnInfo(name = "id") val wordId: Int,
+    @ColumnInfo(name = "review") val review: Int?,
+    @ColumnInfo(name = "number") val name: Int?
 )
