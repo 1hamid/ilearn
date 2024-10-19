@@ -24,7 +24,7 @@ class W504Repository @Inject constructor(private val wordDao: WordDao) {
         return wordDao.loadByReviewDate(date)
     }
 
-    suspend fun loadAllLearnedWords(): List<QueryResult> {
+    suspend fun loadAllLearnedWords(): List<QueryResult2> {
         return wordDao.loadAllLearnedWords()
     }
 
@@ -33,10 +33,14 @@ class W504Repository @Inject constructor(private val wordDao: WordDao) {
     }
 
     suspend fun updateReviewDate(date: Int, id: Int) {
-        return wordDao.updateReviewDate(date, id)
+        wordDao.updateReviewDate(date, id)
+    }
+
+    suspend fun updateBoxNumber(boxNumber: Int, id: Int) {
+        wordDao.updateBoxNumber(boxNumber, id)
     }
 
     suspend fun reset() {
-        return wordDao.reset()
+        wordDao.reset()
     }
 }

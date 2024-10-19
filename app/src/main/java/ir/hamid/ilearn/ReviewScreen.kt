@@ -1,6 +1,5 @@
 package ir.hamid.ilearn
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -260,7 +259,6 @@ fun ReviewLayout(
 
 fun updateReviewDate(id: Int, level: Double, wordViewModel: W504ViewModel?) {
     val date = getStartOfDayTimestamp() + ((level.pow(2)) * 24 * 60 * 60)
-    Log.i("reset", "reset update learning  - id = $id  date= $date")
-    wordViewModel!!.updateReviewDate(date.toInt(), id)
+    wordViewModel!!.updateReviewDate(date.toInt(), level.toInt(), id)
 }
 

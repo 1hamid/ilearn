@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.hamid.model.DataStoreRepository
 import ir.hamid.model.QueryResult
+import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,14 +23,14 @@ class W504ViewModel @Inject constructor(
 
     private var _allWords = MutableLiveData<List<QueryResult>>()
     private var _newWords = MutableLiveData<List<QueryResult>>()
-    private var _learnedWords = MutableLiveData<List<QueryResult>>()
+    private var _learnedWords = MutableLiveData<List<QueryResult2>>()
     private var _reviewWords = MutableLiveData<List<QueryResult>>()
     private var _searchWords = MutableLiveData<List<QueryResult>>()
 
     val allWords: LiveData<List<QueryResult>> get() = _allWords
     val newWords: LiveData<List<QueryResult>> get() = _newWords
     val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
-    val learnedWords: LiveData<List<QueryResult>> get() = _learnedWords
+    val learnedWords: LiveData<List<QueryResult2>> get() = _learnedWords
 
     val counterData: LiveData<Int?> = dataStoreRepository.counter.asLiveData()
 
@@ -92,9 +93,10 @@ class W504ViewModel @Inject constructor(
         }
     }
 
-    fun updateReviewDate(date: Int, id: Int) {
+    fun updateReviewDate(date: Int, boxNumber: Int, id: Int) {
         viewModelScope.launch {
             w504repository.updateReviewDate(date, id)
+            w504repository.updateBoxNumber(boxNumber, id)
         }
     }
 
