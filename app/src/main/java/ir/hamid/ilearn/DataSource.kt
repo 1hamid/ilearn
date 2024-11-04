@@ -6,6 +6,7 @@ object DataSource {
         Learning,
         Review,
         Search,
-        Analysis
+        WordsBox,
+        WordsList
     }
 }

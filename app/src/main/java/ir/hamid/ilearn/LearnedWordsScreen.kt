@@ -2,19 +2,15 @@ package ir.hamid.ilearn
 
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,8 +29,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -44,7 +38,7 @@ import ir.hamid.viewmodel.W504ViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LearnedWordsScreen(wordViewModel: W504ViewModel) {
+fun LearnedWordsScreen(wordViewModel: W504ViewModel, box: Int) {
     Scaffold(topBar = {
         TopAppBar(title = {
             Text(
@@ -56,246 +50,21 @@ fun LearnedWordsScreen(wordViewModel: W504ViewModel) {
         })
     },
         content = { innerPadding ->
-            GetLearnedWords(wordViewModel, innerPadding)
+            GetLearnedWords(wordViewModel, box, innerPadding)
         })
 }
 
 @Composable
-fun WordsBoxView(innerPadding: PaddingValues, words: List<QueryResult2>) {
-
-    var boxNumber by remember { mutableIntStateOf(0) }
-
-    val wBox1: MutableList<QueryResult2> = mutableListOf()
-    val wBox2: MutableList<QueryResult2> = mutableListOf()
-    val wBox3: MutableList<QueryResult2> = mutableListOf()
-    val wBox4: MutableList<QueryResult2> = mutableListOf()
-    val wBox5: MutableList<QueryResult2> = mutableListOf()
-    for (i in words.indices) {
-        when (words[i].number) {
-            1 -> {
-                wBox1.add(words[i])
-            }
-            2 -> {
-                wBox2.add(words[i])
-            }
-            3 -> {
-                wBox3.add(words[i])
-            }
-            4 -> {
-                wBox4.add(words[i])
-            }
-            5 -> {
-                wBox5.add(words[i])
-            }
-        }
-    }
-    if (boxNumber == 0) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(1f / 2f)
-                    .padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        shape = RoundedCornerShape(50f),
-                        colors = CardColors(
-                            containerColor = colorResource(id = R.color.cardColor),
-                            contentColor = colorResource(id = R.color.cardColor),
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.DarkGray
-                        ),
-                        onClick = {
-                            if (wBox1.isNotEmpty())
-                                boxNumber = 1
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "1",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                                color = Color.Black
-                            )
-                        }
-                    }
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        shape = RoundedCornerShape(50f),
-                        colors = CardColors(
-                            containerColor = colorResource(id = R.color.cardColor),
-                            contentColor = colorResource(id = R.color.cardColor),
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.DarkGray
-                        ),
-                        onClick = {
-                            if (wBox2.isNotEmpty())
-                                boxNumber = 2
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "2",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                                color = Color.Black
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        shape = RoundedCornerShape(50f),
-                        colors = CardColors(
-                            containerColor = colorResource(id = R.color.cardColor),
-                            contentColor = colorResource(id = R.color.cardColor),
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.DarkGray
-                        ),
-                        onClick = {
-                            if (wBox3.isNotEmpty())
-                                boxNumber = 3
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "3",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                                color = Color.Black
-                            )
-                        }
-                    }
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        shape = RoundedCornerShape(50f),
-                        colors = CardColors(
-                            containerColor = colorResource(id = R.color.cardColor),
-                            contentColor = colorResource(id = R.color.cardColor),
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.DarkGray
-                        ),
-                        onClick = {
-                            if (wBox4.isNotEmpty())
-                                boxNumber = 4
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "4",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                                color = Color.Black
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(start = 20.dp, end = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .padding(10.dp),
-                        shape = RoundedCornerShape(50f),
-                        colors = CardColors(
-                            containerColor = colorResource(id = R.color.cardColor),
-                            contentColor = colorResource(id = R.color.cardColor),
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.DarkGray
-                        ),
-                        onClick = {
-                            if (wBox5.isNotEmpty())
-                                boxNumber = 5
-                        }
-                    ) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "5",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.kanitmedium)),
-                                color = Color.Black
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-    when (boxNumber) {
-        1 -> WordsList(wBox1, innerPadding)
-        2 -> WordsList(wBox2, innerPadding)
-        3 -> WordsList(wBox3, innerPadding)
-        4 -> WordsList(wBox4, innerPadding)
-        5 -> WordsList(wBox5, innerPadding)
-    }
-}
-
-@Composable
-fun GetLearnedWords(wordViewModel: W504ViewModel, innerPadding: PaddingValues) {
-    wordViewModel.fetchLearnedWords()
+fun GetLearnedWords(wordViewModel: W504ViewModel, box: Int, innerPadding: PaddingValues) {
+    wordViewModel.fetchLearnedWordsByBox(box)
     val words by wordViewModel.learnedWords.observeAsState()
 
     if (words.isNullOrEmpty()) {
         Loading()
     } else {
-        WordsBoxView(innerPadding, words!!)
+        WordsList(words!!, innerPadding)
     }
 }
-
 
 @Composable
 fun WordsList(words: List<QueryResult2>, innerPadding: PaddingValues) {

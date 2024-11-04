@@ -23,6 +23,9 @@ interface WordDao {
     @Query("SELECT w504.id, w504.word, w504.code, w504.pronunciation, w504.sample, w504.definition, w504.translate, state.review, state.number FROM w504, state WHERE w504.id = state.id AND w504.id IN (SELECT state.id FROM state WHERE review IS NOT null)")
     suspend fun loadAllLearnedWords(): List<QueryResult2>
 
+    @Query("SELECT w504.id, w504.word, w504.code, w504.pronunciation, w504.sample, w504.definition, w504.translate, state.review, state.number FROM w504, state WHERE w504.id = state.id AND w504.id IN (SELECT state.id FROM state WHERE review IS NOT null AND number == :box)")
+    suspend fun loadLearnedWordsByBox(box: Int): List<QueryResult2>
+
     @Query("SELECT * FROM W504 WHERE id IN (SELECT id FROM state WHERE review IS null LIMIT 10)")
     suspend fun loadNewWords(): List<QueryResult>
 

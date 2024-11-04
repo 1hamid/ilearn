@@ -119,11 +119,15 @@ class MainActivity : ComponentActivity() {
                 composable(route = DataSource.IlearnScreens.Review.name) {
                     ReviewScreen(wordViewModel)
                 }
-                composable(route = DataSource.IlearnScreens.Analysis.name) {
-                    LearnedWordsScreen(wordViewModel)
+                composable(route = DataSource.IlearnScreens.WordsBox.name) {
+                    WordsBoxScreen(wordViewModel, navController)
                 }
                 composable(route = DataSource.IlearnScreens.Search.name) {
-                    // Todo SearchScreen
+                    SearchScreen(wordViewModel)
+                }
+                composable(route = DataSource.IlearnScreens.WordsList.name + "/{boxNumber}") { backStageEntry ->
+                    val boxNumber = backStageEntry.arguments?.getString("boxNumber")?.toIntOrNull()
+                    LearnedWordsScreen(wordViewModel, boxNumber!!)
                 }
             }
         }
@@ -172,7 +176,8 @@ class MainActivity : ComponentActivity() {
                     contentColor = colorResource(id = R.color.cardColor),
                     disabledContainerColor = Color.Gray,
                     disabledContentColor = Color.DarkGray,
-                )
+                ),
+                onClick = { navController.navigate(DataSource.IlearnScreens.Search.name) }
             ) {
                 Box(
                     modifier = Modifier
@@ -259,7 +264,7 @@ class MainActivity : ComponentActivity() {
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() })
                     {
-                        navController.navigate(DataSource.IlearnScreens.Analysis.name)
+                        navController.navigate(DataSource.IlearnScreens.WordsBox.name)
                     }
             ) {
                 CircularProgressIndicator(

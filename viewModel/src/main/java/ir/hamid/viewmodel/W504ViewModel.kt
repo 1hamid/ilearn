@@ -31,6 +31,7 @@ class W504ViewModel @Inject constructor(
     val newWords: LiveData<List<QueryResult>> get() = _newWords
     val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
     val learnedWords: LiveData<List<QueryResult2>> get() = _learnedWords
+    val searchedWords: LiveData<List<QueryResult>> get() = _searchWords
 
     val counterData: LiveData<Int?> = dataStoreRepository.counter.asLiveData()
 
@@ -61,9 +62,16 @@ class W504ViewModel @Inject constructor(
         }
     }
 
-    fun fetchLearnedWords() {
+//    fun fetchLearnedWords() {
+//        viewModelScope.launch {
+//            val data = w504repository.loadAllLearnedWords()
+//            _learnedWords.value = data
+//        }
+//    }
+
+    fun fetchLearnedWordsByBox(box: Int) {
         viewModelScope.launch {
-            val data = w504repository.loadAllLearnedWords()
+            val data = w504repository.loadLearnedWordsByBox(box)
             _learnedWords.value = data
         }
     }
