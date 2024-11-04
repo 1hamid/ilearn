@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -82,48 +83,59 @@ private fun Layout(
     var index by remember { mutableIntStateOf(0) }
     var nextButtonState by remember { mutableStateOf(true) }
     var previousButtonState by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = words[index].word,
-            modifier = Modifier.padding(bottom = 10.dp),
-            fontSize = 40.sp
-        )
-        Text(
-            text = words[index].pronunciation,
-            modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)
-        )
-        Text(
-            text = words[index].definition,
-            modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(70f)
+                .padding(top = innerPadding.calculateTopPadding()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
-                text = words[index].translate,
+                text = words[index].word,
+                modifier = Modifier.padding(bottom = 10.dp),
+                fontSize = 40.sp
+            )
+            Text(
+                text = words[index].pronunciation,
+                modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)
+            )
+            Text(
+                text = words[index].definition,
                 modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
                 fontSize = 20.sp
             )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = words[index].translate,
+                    modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
+                    fontSize = 20.sp
+                )
+            }
+            Text(
+                text = words[index].sample,
+                modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
+                fontSize = 20.sp
+            )
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                Text(
+                    text = words[index].code,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                )
+            }
         }
-        Text(
-            text = words[index].sample,
-            modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Text(text = words[index].code, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
-        }
-        Row(modifier = Modifier.padding(start = 50.dp, top = 50.dp, end = 50.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(start = 25.dp, top = 50.dp, end = 25.dp)
+                .fillMaxWidth()
+                .weight(15f)
+        ) {
             Button(
                 modifier = Modifier
                     .padding(15.dp)
-                    .fillMaxWidth()
-                    .weight(1f)
+                    .fillMaxHeight()
+                    .weight(50f)
                     .alpha(if (previousButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
@@ -137,14 +149,14 @@ private fun Layout(
                     }
                 },
                 enabled = previousButtonState
-                ) {
+            ) {
                 Text(text = "Previous", color = Color.Black)
             }
             Button(
                 modifier = Modifier
                     .padding(15.dp)
-                    .fillMaxWidth()
-                    .weight(1f)
+                    .fillMaxHeight()
+                    .weight(50f)
                     .alpha(if (nextButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
@@ -161,11 +173,16 @@ private fun Layout(
                 Text(text = "Next", color = Color.Black)
             }
         }
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(15f)
+        ) {
             Button(
                 modifier = Modifier
-                    .padding(start = 65.dp, end = 65.dp, bottom = 50.dp)
-                    .fillMaxWidth(),
+                    .padding(start = 40.dp, end = 40.dp, bottom = 50.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.6f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.submit)),
                 onClick = {
@@ -200,7 +217,7 @@ private fun GetData(
 
 fun insertReviewDate(id: Int, wordViewModel: W504ViewModel?) {
     val date = getStartOfDayTimestamp()
-    wordViewModel!!.updateReviewDate(date,1, id)
+    wordViewModel!!.updateReviewDate(date, 1, id)
 
     val c = wordViewModel.counterData.value
     wordViewModel.saveCounter(c!! + 1)
