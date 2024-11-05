@@ -45,6 +45,7 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltVersion" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltVersion" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreVersion"}
+gson = {group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

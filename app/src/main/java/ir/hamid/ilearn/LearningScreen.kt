@@ -1,13 +1,19 @@
 package ir.hamid.ilearn
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +35,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -83,6 +90,8 @@ private fun Layout(
     var index by remember { mutableIntStateOf(0) }
     var nextButtonState by remember { mutableStateOf(true) }
     var previousButtonState by remember { mutableStateOf(false) }
+    var isPlaySound by remember { mutableStateOf(false) }
+
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -97,10 +106,29 @@ private fun Layout(
                 modifier = Modifier.padding(bottom = 10.dp),
                 fontSize = 40.sp
             )
-            Text(
-                text = words[index].pronunciation,
-                modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 20.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 30.dp)
+            ) {
+                Text(
+                    text = words[index].pronunciation,
+                    modifier = Modifier.padding(end = 5.dp)
+                )
+                Box(modifier = Modifier
+                    .width(20.dp)
+                    .height(20.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() })
+                    {
+                        isPlaySound = true
+                    }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.play),
+                        contentDescription = "play sound"
+                    )
+                }
+            }
             Text(
                 text = words[index].definition,
                 modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
@@ -113,8 +141,9 @@ private fun Layout(
                     fontSize = 20.sp
                 )
             }
+            val sample = words[index].sample.replace(Regex("(b\\.|c\\.)"), "\n$1")
             Text(
-                text = words[index].sample,
+                text = sample,
                 modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
                 fontSize = 20.sp
             )
@@ -198,6 +227,11 @@ private fun Layout(
                 Text(text = "OK", color = Color.Black)
             }
         }
+    }
+
+    if (isPlaySound) {
+        PlaySound(words[index].word)
+        isPlaySound = false
     }
 }
 

@@ -1,6 +1,10 @@
 package ir.hamid.ilearn
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -95,6 +101,7 @@ fun ReviewLayout(
 ) {
     var index by remember { mutableIntStateOf(0) }
     var showAnswer by remember { mutableStateOf(false) }
+    var isPlaySound by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -103,10 +110,34 @@ fun ReviewLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = words[index].word, modifier = Modifier.padding(bottom = 10.dp),
-            fontSize = 40.sp
-        )
+        Row(
+            modifier = Modifier.padding(bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            Text(
+                text = words[index].word, modifier = Modifier.padding(end = 5.dp),
+                fontSize = 40.sp
+            )
+
+            Box(modifier = Modifier
+                .width(24.dp)
+                .height(24.dp)
+                .padding(top = 5.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() })
+                {
+                    isPlaySound = true
+                }) {
+                Image(
+                    painter = painterResource(id = R.drawable.play),
+                    contentDescription = "play sound"
+                )
+            }
+
+        }
+
         Text(
             text = if (showAnswer) words[index].pronunciation else "",
             modifier = if (showAnswer) Modifier.padding(
@@ -135,8 +166,9 @@ fun ReviewLayout(
                 fontSize = 20.sp
             )
         }
+        val sample = words[index].sample.replace(Regex("(b\\.|c\\.)"), "\n$1")
         Text(
-            text = if (showAnswer) words[index].sample else "",
+            text = if (showAnswer) sample else "",
             modifier = if (showAnswer) Modifier.padding(
                 bottom = 20.dp,
                 start = 20.dp,
@@ -254,6 +286,11 @@ fun ReviewLayout(
             }
         }
 
+    }
+
+    if (isPlaySound) {
+        PlaySound(words[index].word)
+        isPlaySound = false
     }
 }
 

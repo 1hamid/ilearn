@@ -54,8 +54,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import ir.hamid.model.DataStoreRepository
+import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
@@ -123,11 +125,16 @@ class MainActivity : ComponentActivity() {
                     WordsBoxScreen(wordViewModel, navController)
                 }
                 composable(route = DataSource.IlearnScreens.Search.name) {
-                    SearchScreen(wordViewModel)
+                    SearchScreen(wordViewModel, navController)
                 }
-                composable(route = DataSource.IlearnScreens.WordsList.name + "/{boxNumber}") { backStageEntry ->
-                    val boxNumber = backStageEntry.arguments?.getString("boxNumber")?.toIntOrNull()
+                composable(route = DataSource.IlearnScreens.WordsList.name + "/{boxNumber}") { backStackEntry ->
+                    val boxNumber = backStackEntry.arguments?.getString("boxNumber")?.toIntOrNull()
                     LearnedWordsScreen(wordViewModel, boxNumber!!)
+                }
+                composable(route = DataSource.IlearnScreens.WordScreen.name + "/{word}") { backStackEntry ->
+                    val wordJson = backStackEntry.arguments?.getString("word")
+                    val word = Gson().fromJson(wordJson, QueryResult2::class.java)
+                    WordsScreen(word)
                 }
             }
         }

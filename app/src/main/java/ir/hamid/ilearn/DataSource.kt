@@ -7,6 +7,7 @@ object DataSource {
         Review,
         Search,
         WordsBox,
-        WordsList
+        WordsList,
+        WordScreen
     }
 }

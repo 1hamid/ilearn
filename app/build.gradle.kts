@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.hilt.android)
     implementation(libs.datastore)
+    implementation(libs.gson)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
