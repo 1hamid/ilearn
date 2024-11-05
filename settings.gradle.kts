@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "ilearn"
 include(":app")
+include(":model")
+include(":viewModel")

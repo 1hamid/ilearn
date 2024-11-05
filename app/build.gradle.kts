@@ -1,6 +1,12 @@
+import org.jetbrains.kotlin.builtins.StandardNames.FqNames.target
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.hiltAndroid)
+    id("com.diffplug.spotless") version "7.0.0.BETA1"
 }
 
 android {
@@ -30,17 +36,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -59,6 +65,14 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
+    implementation(project(":viewModel"))
+    implementation(project(":model"))
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.hilt.android)
+    implementation(libs.datastore)
+    implementation(libs.gson)
+    ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,4 +80,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+spotless {
+    kotlin {
+        target ("*/**.kt", "*/**.kts")
+        targetExclude("${layout.buildDirectory.get()}/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
+
+        ktlint()
+    }
 }
