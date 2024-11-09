@@ -1,9 +1,12 @@
 package ir.hamid.ilearn
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,16 +21,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,6 +60,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -144,6 +155,7 @@ class MainActivity : ComponentActivity() {
     private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
         val context = LocalContext.current
         var showDialog by remember { mutableStateOf(false) }
+        var ResetDialog by remember { mutableStateOf(false) }
 
         var progress by remember { mutableFloatStateOf(0f) }
         wordViewModel.counterData.observe(this) { counter ->
@@ -299,8 +311,8 @@ class MainActivity : ComponentActivity() {
                     {
                         showDialog = true
                     }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.reset),
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings),
                         contentDescription = "reset"
                     )
                 }
@@ -308,13 +320,28 @@ class MainActivity : ComponentActivity() {
 
         }
         if (showDialog) {
+            SettingsDialog(repo = {
+                showDialog = false
+                ResetDialog = false
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1hamid/ilearn"))
+                startActivity(intent)
+            }, reset = {
+                showDialog = false
+                ResetDialog = true
+            }, onDismiss = {
+                showDialog = false
+                ResetDialog = false
+            })
+        }
+
+        if (ResetDialog) {
             ResetAlertDialog(
                 onConfirm = {
                     Toast.makeText(context, "Reset", Toast.LENGTH_LONG).show()
-                    showDialog = false
+                    ResetDialog = false
                 },
                 onDismiss = {
-                    showDialog = false
+                    ResetDialog = false
                 }
             )
         }
@@ -354,5 +381,78 @@ class MainActivity : ComponentActivity() {
                 }
             }
         )
+    }
+
+    @Composable
+    private fun SettingsDialog(repo: () -> Unit, reset: () -> Unit, onDismiss: () -> Unit) {
+        Dialog(
+            onDismissRequest = {
+                onDismiss()
+            }
+        ) {
+            Card(
+                modifier = Modifier
+                    .wrapContentWidth(),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Column {
+                    Row(modifier = Modifier.wrapContentWidth()) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            painterResource(R.drawable.close),
+                            "close Dialog",
+                            modifier = Modifier
+                                .padding(top = 8.dp, end = 8.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }) { onDismiss() }
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) { reset() }
+                            .padding(start = 16.dp, top = 18.dp, bottom = 16.dp, end = 100.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.reset),
+                            contentDescription = "Reset database",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(
+                            text = "Reset",
+                            modifier = Modifier.padding(start = 8.dp),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) { repo() }
+                            .padding(start = 16.dp, bottom = 16.dp, end = 100.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.repository),
+                            contentDescription = "Repository address",
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(
+                            text = "Repository",
+                            modifier = Modifier.padding(start = 8.dp),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
+            }
+        }
     }
 }
