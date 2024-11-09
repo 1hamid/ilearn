@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -158,8 +159,12 @@ class MainActivity : ComponentActivity() {
         var ResetDialog by remember { mutableStateOf(false) }
 
         var progress by remember { mutableFloatStateOf(0f) }
+        var progress2 by remember { mutableIntStateOf(0) }
+        var count by remember { mutableIntStateOf(0) }
         wordViewModel.counterData.observe(this) { counter ->
             if (counter != null) {
+                count = counter
+                progress2 = ((100 * counter) / 540)
                 progress = ((100f * counter.toFloat()) / 540f) / 100f
             }
         }
@@ -284,7 +289,8 @@ class MainActivity : ComponentActivity() {
                         interactionSource = remember { MutableInteractionSource() })
                     {
                         navController.navigate(DataSource.IlearnScreens.WordsBox.name)
-                    }
+                    },
+                contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier.fillMaxSize(),
@@ -295,6 +301,10 @@ class MainActivity : ComponentActivity() {
                     strokeWidth = 13.dp,
                     trackColor = colorResource(id = R.color.cardColor),
                 )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = "%$progress2", fontSize = 23.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "$count / 504", fontSize = 15.sp)
+                }
             }
 
             Row(
