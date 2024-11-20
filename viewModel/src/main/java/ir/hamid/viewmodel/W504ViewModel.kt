@@ -21,19 +21,20 @@ class W504ViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private var _allWords = MutableLiveData<List<QueryResult>>()
+//    private var _allWords = MutableLiveData<List<QueryResult>>()
     private var _newWords = MutableLiveData<List<QueryResult>>()
     private var _learnedWords = MutableLiveData<List<QueryResult2>>()
     private var _reviewWords = MutableLiveData<List<QueryResult>>()
     private var _searchWords = MutableLiveData<List<QueryResult>>()
 
-    val allWords: LiveData<List<QueryResult>> get() = _allWords
+//    val allWords: LiveData<List<QueryResult>> get() = _allWords
     val newWords: LiveData<List<QueryResult>> get() = _newWords
     val reviewWords: LiveData<List<QueryResult>> get() = _reviewWords
     val learnedWords: LiveData<List<QueryResult2>> get() = _learnedWords
     val searchedWords: LiveData<List<QueryResult>> get() = _searchWords
 
     val counterData: LiveData<Int?> = dataStoreRepository.counter.asLiveData()
+    val isDarkTheme: LiveData<Boolean?> = dataStoreRepository.isDarkTheme.asLiveData()
 
     fun saveCounter(value: Int) {
         viewModelScope.launch {
@@ -41,12 +42,18 @@ class W504ViewModel @Inject constructor(
         }
     }
 
-    private fun fetchAllWords() {
+    fun saveThemeState(isDark: Boolean) {
         viewModelScope.launch {
-            val data = w504repository.gelAll()
-            _allWords.value = data
+            dataStoreRepository.saveThemeState(isDark)
         }
     }
+
+//    private fun fetchAllWords() {
+//        viewModelScope.launch {
+//            val data = w504repository.gelAll()
+//            _allWords.value = data
+//        }
+//    }
 
     fun fetchWordsByDate(date: Int?) {
         viewModelScope.launch {

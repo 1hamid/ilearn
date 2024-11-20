@@ -1,6 +1,5 @@
 package ir.hamid.ilearn.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -36,19 +35,52 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun IlearnTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    isDark: Boolean?,
+    setThemeState: (isDark: Boolean) -> Unit,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colorScheme =
+        if (isDark != null) {
+            if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val context = LocalContext.current
+                if (isDark) {
+                    dynamicDarkColorScheme(context)
+                } else {
+                    dynamicLightColorScheme(context)
+                }
+            } else {
+                if (isDark) {
+                    DarkColorScheme
+                } else {
+                    LightColorScheme
+                }
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+        } else {
+            when {
+                dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                    val context = LocalContext.current
+                    if (darkTheme) {
+                        setThemeState.invoke(true)
+                        dynamicDarkColorScheme(context)
+                    } else {
+                        setThemeState.invoke(false)
+                        dynamicLightColorScheme(context)
+                    }
+                }
+
+                darkTheme -> {
+                    setThemeState.invoke(true)
+                    DarkColorScheme
+                }
+                else -> {
+                    setThemeState.invoke(false)
+                    LightColorScheme
+                }
+            }
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,

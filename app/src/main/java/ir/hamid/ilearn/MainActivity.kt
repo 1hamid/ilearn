@@ -6,14 +6,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -37,12 +34,12 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -66,8 +64,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.rememberLottieDynamicProperties
+import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
+import ir.hamid.ilearn.ui.theme.IlearnTheme
 import ir.hamid.model.DataStoreRepository
 import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
@@ -92,17 +98,73 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            AppBar()
+        var isDark: Boolean? = null
+        wordViewModel.isDarkTheme.observe(this) { isDarkTheme ->
+            isDark = isDarkTheme
+
+            setContent {
+                IlearnTheme(
+                    isDark = isDark,
+                    setThemeState = { isDark -> wordViewModel.saveThemeState(isDark) }) {
+                    AppBar()
+                }
+            }
         }
-//        val timestamp = System.currentTimeMillis()
-//        wordViewModel.fetchDataByDate(timestamp)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
-//        val reviewWords by wordViewModel.reviewWords.observeAsState()
+
+        var isPlaying by remember { mutableStateOf(true) }
+        var darkMode by remember { mutableStateOf(true) }
+
+        wordViewModel.isDarkTheme.observe(this) { isDarkTheme ->
+            darkMode = isDarkTheme == true
+        }
+
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.sun))
+
+        val dynamicPropertiesLight = rememberLottieDynamicProperties(
+            rememberLottieDynamicProperty(
+                LottieProperty.COLOR,
+                value = colorResource(R.color.black).toArgb(),
+                keyPath = arrayOf("**")
+            )
+        )
+
+        val dynamicPropertiesDark = rememberLottieDynamicProperties(
+            rememberLottieDynamicProperty(
+                LottieProperty.COLOR,
+                value = colorResource(R.color.white).toArgb(),
+                keyPath = arrayOf("**")
+            )
+        )
+
+        val lightProgress by animateLottieCompositionAsState(
+            composition = composition,
+            isPlaying = isPlaying,
+            iterations = 1,
+        )
+
+        val darkProgress by animateLottieCompositionAsState(
+            composition = composition,
+            isPlaying = isPlaying,
+            iterations = 1,
+            speed = -1f
+        )
+
+        LaunchedEffect(lightProgress) {
+            if (lightProgress == 1f) {
+                isPlaying = false
+            }
+        }
+        LaunchedEffect(darkProgress) {
+            if (lightProgress == 1f) {
+                isPlaying = false
+            }
+        }
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -114,6 +176,28 @@ class MainActivity : ComponentActivity() {
                             fontSize = 20.sp
                         )
                     },
+                    actions = {
+                        Box(
+                            modifier = Modifier
+                                .padding(end = 25.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() })
+                                {
+                                    isPlaying = true
+                                    darkMode = !darkMode
+                                    wordViewModel.saveThemeState(darkMode)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LottieAnimation(
+                                composition = composition,
+                                progress = { if (darkMode) lightProgress else darkProgress },
+                                modifier = Modifier.size(25.dp),
+                                dynamicProperties = if (darkMode) dynamicPropertiesDark else dynamicPropertiesLight
+                            )
+                        }
+                    }
                 )
             }
         ) { innerPadding ->
@@ -156,11 +240,12 @@ class MainActivity : ComponentActivity() {
     private fun AppUI(innerPadding: PaddingValues, navController: NavController) {
         val context = LocalContext.current
         var showDialog by remember { mutableStateOf(false) }
-        var ResetDialog by remember { mutableStateOf(false) }
+        var resetDialog by remember { mutableStateOf(false) }
 
         var progress by remember { mutableFloatStateOf(0f) }
         var progress2 by remember { mutableIntStateOf(0) }
         var count by remember { mutableIntStateOf(0) }
+
         wordViewModel.counterData.observe(this) { counter ->
             if (counter != null) {
                 count = counter
@@ -332,26 +417,27 @@ class MainActivity : ComponentActivity() {
         if (showDialog) {
             SettingsDialog(repo = {
                 showDialog = false
-                ResetDialog = false
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1hamid/ilearn"))
+                resetDialog = false
+                val intent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/1hamid/ilearn"))
                 startActivity(intent)
             }, reset = {
                 showDialog = false
-                ResetDialog = true
+                resetDialog = true
             }, onDismiss = {
                 showDialog = false
-                ResetDialog = false
+                resetDialog = false
             })
         }
 
-        if (ResetDialog) {
+        if (resetDialog) {
             ResetAlertDialog(
                 onConfirm = {
                     Toast.makeText(context, "Reset", Toast.LENGTH_LONG).show()
-                    ResetDialog = false
+                    resetDialog = false
                 },
                 onDismiss = {
-                    ResetDialog = false
+                    resetDialog = false
                 }
             )
         }
