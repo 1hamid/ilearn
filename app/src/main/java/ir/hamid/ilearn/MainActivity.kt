@@ -79,6 +79,7 @@ import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
+import java.net.URLDecoder
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -229,7 +230,8 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(route = DataSource.IlearnScreens.WordScreen.name + "/{word}") { backStackEntry ->
                     val wordJson = backStackEntry.arguments?.getString("word")
-                    val word = Gson().fromJson(wordJson, QueryResult2::class.java)
+                    val decodedWordJson = URLDecoder.decode(wordJson, "UTF-8")
+                    val word = Gson().fromJson(decodedWordJson, QueryResult2::class.java)
                     WordsScreen(word)
                 }
             }

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import ir.hamid.viewmodel.W504ViewModel
+import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -135,7 +136,8 @@ fun TabContent(type: String, wordViewModel: W504ViewModel, navController: NavHos
                             interactionSource = remember { MutableInteractionSource() })
                         {
                             val itemJson = Gson().toJson(item)
-                            navController.navigate(DataSource.IlearnScreens.WordScreen.name + "/$itemJson")
+                            val encodedItemJson = URLEncoder.encode(itemJson, "UTF-8")
+                            navController.navigate(DataSource.IlearnScreens.WordScreen.name + "/$encodedItemJson")
                         }) {
                             Text(
                                 text = item.word + "  |  " + item.translate,
