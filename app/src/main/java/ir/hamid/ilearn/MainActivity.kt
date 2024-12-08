@@ -216,7 +216,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
                 composable(route = DataSource.IlearnScreens.Review.name) {
-                    ReviewScreen(wordViewModel)
+                    ReviewScreen(wordViewModel, navController)
                 }
                 composable(route = DataSource.IlearnScreens.WordsBox.name) {
                     WordsBoxScreen(wordViewModel, navController)

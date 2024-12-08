@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -90,73 +92,17 @@ private fun Layout(
     var index by remember { mutableIntStateOf(0) }
     var nextButtonState by remember { mutableStateOf(true) }
     var previousButtonState by remember { mutableStateOf(false) }
-    var isPlaySound by remember { mutableStateOf(false) }
-
     Column(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
+        WordLayout(
+            words, index, true, Modifier
                 .fillMaxWidth()
                 .weight(70f)
-                .padding(top = innerPadding.calculateTopPadding()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = words[index].word,
-                modifier = Modifier.padding(bottom = 10.dp),
-                fontSize = 40.sp
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 30.dp)
-            ) {
-                Text(
-                    text = words[index].pronunciation,
-                    modifier = Modifier.padding(end = 5.dp)
-                )
-                Box(modifier = Modifier
-                    .width(20.dp)
-                    .height(20.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() })
-                    {
-                        isPlaySound = true
-                    }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.play),
-                        contentDescription = "play sound"
-                    )
-                }
-            }
-            Text(
-                text = words[index].definition,
-                modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-                fontSize = 20.sp
-            )
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                Text(
-                    text = words[index].translate,
-                    modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-                    fontSize = 20.sp
-                )
-            }
-            val sample = words[index].sample.replace(Regex("(b\\.|c\\.)"), "\n$1")
-            Text(
-                text = sample,
-                modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-                fontSize = 20.sp
-            )
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                Text(
-                    text = words[index].code,
-                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
-                )
-            }
-        }
+                .padding(top = innerPadding.calculateTopPadding())
+        )
         Row(
             modifier = Modifier
-                .padding(start = 25.dp, top = 50.dp, end = 25.dp)
+                .padding(horizontal = 25.dp)
+                .padding(top = 50.dp)
                 .fillMaxWidth()
                 .weight(15f)
         ) {
@@ -228,11 +174,6 @@ private fun Layout(
             }
         }
     }
-
-    if (isPlaySound) {
-        PlaySound(words[index].word)
-        isPlaySound = false
-    }
 }
 
 @Composable
@@ -240,7 +181,9 @@ private fun GetData(
     wordViewModel: W504ViewModel,
     innerPadding: PaddingValues
 ) {
-    wordViewModel.fetchNewWords()
+    LaunchedEffect(Unit) {
+        wordViewModel.fetchNewWords()
+    }
     val newWords by wordViewModel.newWords.observeAsState()
     if (newWords.isNullOrEmpty()) {
         Loading()

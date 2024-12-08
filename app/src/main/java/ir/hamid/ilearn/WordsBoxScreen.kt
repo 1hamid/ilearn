@@ -99,7 +99,7 @@ fun WordsBoxView(innerPadding: PaddingValues, wordViewModel: W504ViewModel, navC
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "1",
+                                text = "Box 1",
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.kanitmedium)),
                                 color = Color.Black
@@ -128,7 +128,7 @@ fun WordsBoxView(innerPadding: PaddingValues, wordViewModel: W504ViewModel, navC
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "2",
+                                text = "Box 2",
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.kanitmedium)),
                                 color = Color.Black
@@ -165,7 +165,7 @@ fun WordsBoxView(innerPadding: PaddingValues, wordViewModel: W504ViewModel, navC
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "3",
+                                text = "Box 3",
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.kanitmedium)),
                                 color = Color.Black
@@ -194,7 +194,7 @@ fun WordsBoxView(innerPadding: PaddingValues, wordViewModel: W504ViewModel, navC
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "4",
+                                text = "Box 4",
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.kanitmedium)),
                                 color = Color.Black
@@ -231,7 +231,7 @@ fun WordsBoxView(innerPadding: PaddingValues, wordViewModel: W504ViewModel, navC
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "5",
+                                text = "Box 5",
                                 fontSize = 20.sp,
                                 fontFamily = FontFamily(Font(R.font.kanitmedium)),
                                 color = Color.Black

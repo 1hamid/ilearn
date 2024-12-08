@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import ir.hamid.ilearn.IlearnApplication.Companion.getStartOfDayTimestamp
 import ir.hamid.model.QueryResult
 import ir.hamid.viewmodel.W504ViewModel
@@ -46,7 +49,7 @@ import kotlin.math.pow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReviewScreen(wordViewModel: W504ViewModel) {
+fun ReviewScreen(wordViewModel: W504ViewModel, navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(title = {
@@ -58,20 +61,27 @@ fun ReviewScreen(wordViewModel: W504ViewModel) {
                 )
             })
         }, content = { innerPadding ->
-            GetDataForReview(wordViewModel, innerPadding)
-        })
+            GetDataForReview(wordViewModel, innerPadding, navController)
+        }
+    )
 }
 
 @Composable
-fun GetDataForReview(wordViewModel: W504ViewModel, innerPadding: PaddingValues) {
+fun GetDataForReview(
+    wordViewModel: W504ViewModel,
+    innerPadding: PaddingValues,
+    navController: NavHostController
+) {
     val date = System.currentTimeMillis() / 1000
-    wordViewModel.fetchWordsByDate(date.toInt())
+    LaunchedEffect(Unit) {
+        wordViewModel.fetchWordsByDate(date.toInt())
 
+    }
     val reviewWords by wordViewModel.reviewWords.observeAsState()
     if (reviewWords.isNullOrEmpty()) {
         Loading()
     } else {
-        ReviewLayout(innerPadding, reviewWords!!, wordViewModel)
+        ReviewLayout(innerPadding, reviewWords!!, wordViewModel, navController)
     }
 }
 
@@ -90,105 +100,32 @@ private fun PreviewReviewLayout() {
             translate = "translate"
         )
     )
-    ReviewLayout(innerPadding = PaddingValues(5.dp), sampleWords, null)
+    ReviewLayout(innerPadding = PaddingValues(5.dp), sampleWords, null, null)
 }
 
 @Composable
 fun ReviewLayout(
     innerPadding: PaddingValues,
     words: List<QueryResult>,
-    wordViewModel: W504ViewModel?
+    wordViewModel: W504ViewModel?,
+    navController: NavHostController?
 ) {
     var index by remember { mutableIntStateOf(0) }
     var showAnswer by remember { mutableStateOf(false) }
     var isPlaySound by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Row(
-            modifier = Modifier.padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-
-            Text(
-                text = words[index].word, modifier = Modifier.padding(end = 5.dp),
-                fontSize = 40.sp
-            )
-
-            Box(modifier = Modifier
-                .width(24.dp)
-                .height(24.dp)
-                .padding(top = 5.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() })
-                {
-                    isPlaySound = true
-                }) {
-                Image(
-                    painter = painterResource(id = R.drawable.play),
-                    contentDescription = "play sound"
-                )
-            }
-
-        }
-
-        Text(
-            text = if (showAnswer) words[index].pronunciation else "",
-            modifier = if (showAnswer) Modifier.padding(
-                bottom = 30.dp,
-                start = 20.dp,
-                end = 20.dp
-            ) else Modifier.padding(0.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
+        WordLayout(
+            words, index, showAnswer,
+            Modifier
+                .fillMaxWidth()
+                .weight(70f)
+                .padding(top = innerPadding.calculateTopPadding())
         )
-        Text(
-            text = if (showAnswer) words[index].definition else "",
-            modifier = if (showAnswer) Modifier.padding(
-                bottom = 20.dp,
-                start = 20.dp,
-                end = 20.dp
-            ) else Modifier.padding(0.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Text(
-                text = if (showAnswer) words[index].translate else "",
-                modifier = if (showAnswer) Modifier.padding(
-                    bottom = 20.dp,
-                    start = 20.dp,
-                    end = 20.dp
-                ) else Modifier.padding(0.dp),
-                fontSize = 20.sp
-            )
-        }
-        val sample = words[index].sample.replace(Regex("(b\\.|c\\.)"), "\n$1")
-        Text(
-            text = if (showAnswer) sample else "",
-            modifier = if (showAnswer) Modifier.padding(
-                bottom = 20.dp,
-                start = 20.dp,
-                end = 20.dp
-            ) else Modifier.padding(0.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Text(
-                text = if (showAnswer) words[index].code else "",
-                modifier = if (showAnswer) Modifier.padding(
-                    start = 20.dp,
-                    end = 20.dp
-                ) else Modifier.padding(0.dp)
-            )
-        }
         Row(
             modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .padding(top = 50.dp, bottom = 20.dp)
+                .weight(15f)
         ) {
             Button(
                 modifier = Modifier
@@ -203,8 +140,11 @@ fun ReviewLayout(
                     updateReviewDate(words[index].id, 1.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
+                    } else {
+                        navController!!.popBackStack()
                     }
-                }) {
+                }
+            ) {
                 Text(text = "1", color = Color.Black)
             }
             Button(
@@ -219,8 +159,11 @@ fun ReviewLayout(
                     updateReviewDate(words[index].id, 2.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
+                    } else {
+                        navController!!.popBackStack()
                     }
-                }) {
+                }
+            ) {
                 Text(text = "2", color = Color.Black)
             }
             Button(
@@ -235,8 +178,11 @@ fun ReviewLayout(
                     updateReviewDate(words[index].id, 3.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
+                    } else {
+                        navController!!.popBackStack()
                     }
-                }) {
+                }
+            ) {
                 Text(text = "3", color = Color.Black)
             }
             Button(
@@ -251,8 +197,11 @@ fun ReviewLayout(
                     updateReviewDate(words[index].id, 4.0, wordViewModel)
                     if (index < words.size - 1) {
                         index++
+                    } else {
+                        navController!!.popBackStack()
                     }
-                }) {
+                }
+            ) {
                 Text(text = "4", color = Color.Black)
             }
             Button(
@@ -267,21 +216,31 @@ fun ReviewLayout(
                     showAnswer = false
                     if (index < words.size - 1) {
                         index++
+                    } else {
+                        navController!!.popBackStack()
                     }
-                }) {
+                }
+            ) {
                 Text(text = "5", color = Color.Black)
             }
         }
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(15f)
+        ) {
             Button(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .fillMaxWidth(),
+                    .padding(bottom = 50.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.6f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.submit)),
                 onClick = {
                     showAnswer = true
-                }) {
+                }
+            ) {
                 Text(text = "Show answer", color = Color.Black)
             }
         }

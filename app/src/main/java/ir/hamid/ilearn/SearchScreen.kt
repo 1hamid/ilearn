@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -70,7 +71,7 @@ fun TabsLayout(
     ) {
         TabRow(
             selectedTabIndex = tabIndex,
-            contentColor = colorResource(id = R.color.black)
+//            contentColor = colorResource(id = R.color.black)
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -95,7 +96,9 @@ fun TabContent(type: String, wordViewModel: W504ViewModel, navController: NavHos
     var str by remember { mutableStateOf("") }
     var search by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(top = 5.dp, start = 5.dp, end = 5.dp)) {
+    Column(modifier = Modifier
+        .padding(top = 8.dp)
+        .padding(horizontal = 8.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,21 +106,21 @@ fun TabContent(type: String, wordViewModel: W504ViewModel, navController: NavHos
         ) {
             TextField(modifier = Modifier
                 .fillMaxHeight()
-                .weight(0.8f),
+                .weight(0.75f),
                 value = str,
                 onValueChange = { newText -> str = newText },
                 label = { Text(text = "Search") })
             Button(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .fillMaxWidth(0.2f),
+                    .fillMaxWidth(0.25f),
                 onClick = {
                     search = true
                     str = str.replace('ی', 'ي')
                     wordViewModel.fetchWordsBySearch(type, str)
                 },
                 shape = RectangleShape,
-            ) {}
+            ) { Text(text = "OK", fontSize = 17.sp) }
         }
 
         if (search) {

@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ir.hamid.model.QueryResult
 import ir.hamid.model.QueryResult2
 import ir.hamid.viewmodel.W504ViewModel
 
@@ -63,7 +65,9 @@ fun LearnedWordsScreen(wordViewModel: W504ViewModel, box: Int) {
 
 @Composable
 fun GetLearnedWords(wordViewModel: W504ViewModel, box: Int, innerPadding: PaddingValues) {
-    wordViewModel.fetchLearnedWordsByBox(box)
+    LaunchedEffect(Unit) {
+        wordViewModel.fetchLearnedWordsByBox(box)
+    }
     val words by wordViewModel.learnedWords.observeAsState()
 
     if (words.isNullOrEmpty()) {
@@ -74,75 +78,35 @@ fun GetLearnedWords(wordViewModel: W504ViewModel, box: Int, innerPadding: Paddin
 }
 
 @Composable
-fun WordsList(words: List<QueryResult2>, innerPadding: PaddingValues) {
+fun WordsList(words: List<QueryResult>, innerPadding: PaddingValues) {
 
     var index by remember { mutableIntStateOf(0) }
     var nextButtonState by remember { mutableStateOf(true) }
     var previousButtonState by remember { mutableStateOf(false) }
     var isPlaySound by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = words[index].word,
-            modifier = Modifier.padding(bottom = 10.dp),
-            fontSize = 40.sp
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        WordLayout(
+            words, index, true,
+            Modifier
+                .fillMaxWidth()
+                .weight(85f)
+                .padding(top = innerPadding.calculateTopPadding())
         )
+
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 30.dp, start = 20.dp, end = 30.dp)
+            modifier = Modifier
+                .padding(horizontal = 50.dp)
+                .padding(top = 10.dp)
+                .fillMaxWidth()
+                .weight(15f)
         ) {
-            Text(
-                text = words[index].pronunciation,
-                modifier = Modifier.padding(end = 5.dp)
-            )
-            Box(modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() })
-                {
-                    isPlaySound = true
-                }) {
-                Image(
-                    painter = painterResource(id = R.drawable.play),
-                    contentDescription = "play sound"
-                )
-            }
-        }
-        Text(
-            text = words[index].definition,
-            modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Text(
-                text = words[index].translate,
-                modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-                fontSize = 20.sp
-            )
-        }
-        val sample = words[index].sample.replace(Regex("(b\\.|c\\.)"), "\n$1")
-        Text(
-            text = sample,
-            modifier = Modifier.padding(bottom = 20.dp, start = 20.dp, end = 20.dp),
-            fontSize = 20.sp
-        )
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Text(text = words[index].code, modifier = Modifier.padding(start = 20.dp, end = 20.dp))
-        }
-        Row(modifier = Modifier.padding(start = 50.dp, top = 50.dp, end = 50.dp)) {
             Button(
                 modifier = Modifier
-                    .padding(15.dp)
+                    .padding(horizontal = 15.dp)
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(50f)
                     .alpha(if (previousButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),
@@ -161,9 +125,9 @@ fun WordsList(words: List<QueryResult2>, innerPadding: PaddingValues) {
             }
             Button(
                 modifier = Modifier
-                    .padding(15.dp)
+                    .padding(horizontal = 15.dp)
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(50f)
                     .alpha(if (nextButtonState) 1f else 0.5f),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.cardColor)),

@@ -28,7 +28,7 @@ class W504Repository @Inject constructor(private val wordDao: WordDao) {
         return wordDao.loadAllLearnedWords()
     }
 
-    suspend fun loadLearnedWordsByBox(box: Int): List<QueryResult2> {
+    suspend fun loadLearnedWordsByBox(box: Int): List<QueryResult> {
         return wordDao.loadLearnedWordsByBox(box)
     }
 
