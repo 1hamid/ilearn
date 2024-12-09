@@ -2,6 +2,7 @@ package ir.hamid.ilearn
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -48,9 +49,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -64,6 +69,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import captureScreenshot
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -79,6 +85,7 @@ import ir.hamid.model.QueryResult2
 import ir.hamid.model.W504Repository
 import ir.hamid.viewmodel.W504ViewModel
 import ir.hamid.viewmodel.WordViewModelFactory
+import kotlinx.coroutines.CoroutineScope
 import java.net.URLDecoder
 import javax.inject.Inject
 
@@ -116,6 +123,10 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun AppBar() {
+
+        val view = LocalView.current
+        var boxCenter by remember { mutableStateOf(Offset.Zero) }
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
         var isPlaying by remember { mutableStateOf(true) }
         var darkMode by remember { mutableStateOf(true) }
@@ -166,76 +177,91 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "iLearn",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 20.sp
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = "iLearn",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 20.sp
+                                )
+                            },
+                            actions = {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = 25.dp)
+                                        .onGloballyPositioned { layoutCoordinates ->
+                                            val positionInRoot = layoutCoordinates.positionInRoot()
+                                            val size = layoutCoordinates.size
+                                            boxCenter = Offset(
+                                                x = positionInRoot.x + size.width / 2f,
+                                                y = positionInRoot.y + size.height / 2f
+                                            )
+                                        }
+                                        .clickable(
+                                            indication = null,
+                                            interactionSource = remember { MutableInteractionSource() })
+                                        {
+                                            bitmap = captureScreenshot(view)
+
+                                            isPlaying = true
+                                            darkMode = !darkMode
+                                            wordViewModel.saveThemeState(darkMode)
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    LottieAnimation(
+                                        composition = composition,
+                                        progress = { if (darkMode) lightProgress else darkProgress },
+                                        modifier = Modifier.size(25.dp),
+                                        dynamicProperties = if (darkMode) dynamicPropertiesDark else dynamicPropertiesLight
+                                    )
+                                }
+                            }
                         )
-                    },
-                    actions = {
-                        Box(
-                            modifier = Modifier
-                                .padding(end = 25.dp)
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() })
-                                {
-                                    isPlaying = true
-                                    darkMode = !darkMode
-                                    wordViewModel.saveThemeState(darkMode)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LottieAnimation(
-                                composition = composition,
-                                progress = { if (darkMode) lightProgress else darkProgress },
-                                modifier = Modifier.size(25.dp),
-                                dynamicProperties = if (darkMode) dynamicPropertiesDark else dynamicPropertiesLight
+                    }
+                ) { innerPadding ->
+                    val navController = rememberNavController()
+                    NavHost(navController, startDestination = DataSource.IlearnScreens.Home.name) {
+                        composable(route = DataSource.IlearnScreens.Home.name) {
+                            AppUI(
+                                innerPadding = innerPadding,
+                                navController
                             )
                         }
+                        composable(route = DataSource.IlearnScreens.Learning.name) {
+                            LearningScreen(
+                                wordViewModel
+                            )
+                        }
+                        composable(route = DataSource.IlearnScreens.Review.name) {
+                            ReviewScreen(wordViewModel, navController)
+                        }
+                        composable(route = DataSource.IlearnScreens.WordsBox.name) {
+                            WordsBoxScreen(wordViewModel, navController)
+                        }
+                        composable(route = DataSource.IlearnScreens.Search.name) {
+                            SearchScreen(wordViewModel, navController)
+                        }
+                        composable(route = DataSource.IlearnScreens.WordsList.name + "/{boxNumber}") { backStackEntry ->
+                            val boxNumber = backStackEntry.arguments?.getString("boxNumber")?.toIntOrNull()
+                            LearnedWordsScreen(wordViewModel, boxNumber!!)
+                        }
+                        composable(route = DataSource.IlearnScreens.WordScreen.name + "/{word}") { backStackEntry ->
+                            val wordJson = backStackEntry.arguments?.getString("word")
+                            val decodedWordJson = URLDecoder.decode(wordJson, "UTF-8")
+                            val word = Gson().fromJson(decodedWordJson, QueryResult2::class.java)
+                            WordsScreen(word)
+                        }
                     }
-                )
-            }
-        ) { innerPadding ->
-            val navController = rememberNavController()
-            NavHost(navController, startDestination = DataSource.IlearnScreens.Home.name) {
-                composable(route = DataSource.IlearnScreens.Home.name) {
-                    AppUI(
-                        innerPadding = innerPadding,
-                        navController
-                    )
                 }
-                composable(route = DataSource.IlearnScreens.Learning.name) {
-                    LearningScreen(
-                        wordViewModel
-                    )
-                }
-                composable(route = DataSource.IlearnScreens.Review.name) {
-                    ReviewScreen(wordViewModel, navController)
-                }
-                composable(route = DataSource.IlearnScreens.WordsBox.name) {
-                    WordsBoxScreen(wordViewModel, navController)
-                }
-                composable(route = DataSource.IlearnScreens.Search.name) {
-                    SearchScreen(wordViewModel, navController)
-                }
-                composable(route = DataSource.IlearnScreens.WordsList.name + "/{boxNumber}") { backStackEntry ->
-                    val boxNumber = backStackEntry.arguments?.getString("boxNumber")?.toIntOrNull()
-                    LearnedWordsScreen(wordViewModel, boxNumber!!)
-                }
-                composable(route = DataSource.IlearnScreens.WordScreen.name + "/{word}") { backStackEntry ->
-                    val wordJson = backStackEntry.arguments?.getString("word")
-                    val decodedWordJson = URLDecoder.decode(wordJson, "UTF-8")
-                    val word = Gson().fromJson(decodedWordJson, QueryResult2::class.java)
-                    WordsScreen(word)
+                bitmap?.let {
+                    DrawBitmap(bitmap, boxCenter, darkMode, innerPadding)
                 }
             }
-        }
     }
 
     @Composable
